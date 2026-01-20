@@ -1,11 +1,35 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import NavigationTabs from '@/components/dashboard/NavigationTabs';
+import MonthSelector from '@/components/dashboard/MonthSelector';
+import RegistrationsCard from '@/components/dashboard/RegistrationsCard';
+import ComplianceCard from '@/components/dashboard/ComplianceCard';
+import ComplianceTable from '@/components/dashboard/ComplianceTable';
+import FilterSection from '@/components/dashboard/FilterSection';
+import HorizontalBarChart from '@/components/dashboard/HorizontalBarChart';
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-background p-4 md:p-6">
+      {/* Header */}
+      <header className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
+        <NavigationTabs />
+        <MonthSelector />
+      </header>
+
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        <RegistrationsCard />
+        <ComplianceCard />
+      </div>
+
+      {/* Bottom Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ComplianceTable />
+        <div className="space-y-4">
+          <div className="dashboard-card">
+            <FilterSection />
+          </div>
+          <HorizontalBarChart />
+        </div>
       </div>
     </div>
   );
