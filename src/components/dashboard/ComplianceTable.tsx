@@ -19,26 +19,31 @@ const tableData = [
 
 const ComplianceTable = () => {
   return (
-    <div className="dashboard-card h-full overflow-hidden">
-      <div className="overflow-auto max-h-[400px]">
+    <div className="dashboard-card h-full overflow-hidden flex flex-col">
+      {/* Fixed Header */}
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th className="w-[60px]"></th>
+            <th className="w-[100px]">Location</th>
+            <th className="w-[100px]">State</th>
+            <th className="w-[80px]">Task Cycle</th>
+            <th className="w-[200px]">Due Date</th>
+            <th className="w-[80px]">Date C</th>
+          </tr>
+        </thead>
+      </table>
+      
+      {/* Scrollable Body */}
+      <div className="overflow-auto flex-1 max-h-[350px]">
         <table className="data-table">
-          <thead className="sticky top-0 z-10 bg-card">
-            <tr>
-              <th></th>
-              <th>Location</th>
-              <th>State</th>
-              <th>Task Cycle</th>
-              <th>Due Date</th>
-              <th>Date C</th>
-            </tr>
-          </thead>
           <tbody>
             {tableData.map((row, index) => (
               <tr key={index} className="animate-fade-in" style={{ animationDelay: `${index * 30}ms` }}>
-                <td className="text-primary font-medium">{row.year}</td>
-                <td>{row.location}</td>
-                <td>{row.state}</td>
-                <td>
+                <td className="text-primary font-medium w-[60px]">{row.year}</td>
+                <td className="w-[100px]">{row.location}</td>
+                <td className="w-[100px]">{row.state}</td>
+                <td className="w-[80px]">
                   <span className={`px-2 py-0.5 rounded text-xs font-medium ${
                     row.taskCycle === 'YLY' ? 'bg-dashboard-cyan/20 text-dashboard-cyan' :
                     row.taskCycle === 'MLY' ? 'bg-dashboard-yellow/20 text-dashboard-yellow' :
@@ -47,8 +52,8 @@ const ComplianceTable = () => {
                     {row.taskCycle}
                   </span>
                 </td>
-                <td className="text-muted-foreground">{row.dueDate}</td>
-                <td>{row.dateCompleted || '-'}</td>
+                <td className="text-muted-foreground w-[200px]">{row.dueDate}</td>
+                <td className="w-[80px]">{row.dateCompleted || '-'}</td>
               </tr>
             ))}
           </tbody>
