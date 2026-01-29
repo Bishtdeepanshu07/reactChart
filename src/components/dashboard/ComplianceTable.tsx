@@ -22,7 +22,7 @@ const ComplianceTable = () => {
     <div className="dashboard-card h-full overflow-hidden">
       <div className="overflow-auto max-h-[400px]">
         <table className="data-table">
-          <thead className="sticky top-0 z-10">
+          <thead className="sticky top-0 z-10 bg-card">
             <tr>
               <th></th>
               <th>Location</th>
