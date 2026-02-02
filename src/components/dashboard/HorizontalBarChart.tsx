@@ -1,15 +1,7 @@
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, LabelList } from 'recharts';
-
-const data = [
-  { name: 'Payroll', completed: 19, notDue: 0, pending: 0 },
-  { name: 'Bonus Act', completed: 0, notDue: 2, pending: 0 },
-  { name: 'National Festiv...', completed: 0, notDue: 2, pending: 0 },
-  { name: 'POSH', completed: 0, notDue: 2, pending: 0 },
-  { name: 'Professional tax', completed: 2, notDue: 0, pending: 0 },
-  { name: 'S&CE', completed: 0, notDue: 1, pending: 1 },
-  { name: 'Employment Ex...', completed: 0, notDue: 1, pending: 0 },
-  { name: 'Labour Welfare...', completed: 0, notDue: 1, pending: 0 },
-];
+import { useMemo } from 'react';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, LabelList } from 'recharts';
+import { useExcelData } from '@/contexts/ExcelContext';
+import { FileSpreadsheet } from 'lucide-react';
 
 const COLORS = {
   completed: 'hsl(174 72% 56%)',
@@ -18,6 +10,44 @@ const COLORS = {
 };
 
 const HorizontalBarChart = () => {
+  const { data } = useExcelData();
+
+  const chartData = useMemo(() => {
+    if (data.length === 0) return [];
+
+    // Group by Act Name and aggregate counts
+    const grouped = data.reduce((acc, row) => {
+      const actName = row.ActName || 'Unknown';
+      if (!acc[actName]) {
+        acc[actName] = { name: actName, completed: 0, notDue: 0, pending: 0 };
+      }
+      acc[actName].completed += row.Completed || 0;
+      acc[actName].notDue += row.NotDue || 0;
+      acc[actName].pending += row.Pending || 0;
+      return acc;
+    }, {} as Record<string, { name: string; completed: number; notDue: number; pending: number }>);
+
+    // Convert to array and sort by total count
+    return Object.values(grouped)
+      .sort((a, b) => (b.completed + b.notDue + b.pending) - (a.completed + a.notDue + a.pending))
+      .slice(0, 8) // Show top 8 acts
+      .map(item => ({
+        ...item,
+        name: item.name.length > 15 ? item.name.substring(0, 12) + '...' : item.name,
+      }));
+  }, [data]);
+
+  if (data.length === 0) {
+    return (
+      <div className="dashboard-card flex flex-col items-center justify-center min-h-[280px] gap-3">
+        <FileSpreadsheet className="w-12 h-12 text-muted-foreground" />
+        <p className="text-muted-foreground text-center text-sm">
+          No data available. Upload an Excel file to see chart.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-card">
       <div className="flex items-start justify-between mb-4">
@@ -25,7 +55,7 @@ const HorizontalBarChart = () => {
           <ResponsiveContainer width="100%" height={280}>
             <BarChart
               layout="vertical"
-              data={data}
+              data={chartData}
               margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
               barCategoryGap="20%"
             >
