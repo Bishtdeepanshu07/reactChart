@@ -1,6 +1,35 @@
+import { useMemo } from 'react';
 import GaugeChart from './GaugeChart';
+import { useExcelData } from '@/contexts/ExcelContext';
 
 const RegistrationsCard = () => {
+  const { data } = useExcelData();
+
+  const stats = useMemo(() => {
+    if (data.length === 0) {
+      return { required: 0, active: 0, pending: 0, total: 0 };
+    }
+
+    // Count registrations based on CertificateStatus
+    const required = data.filter(row => 
+      row.CertificateStatus === 'Required' || row.CertificateStatus === 'Expired'
+    ).length;
+    
+    const active = data.filter(row => 
+      row.CertificateStatus === 'Active' || row.CertificateStatus === 'Valid'
+    ).length;
+    
+    const pending = data.filter(row => 
+      row.CertificateStatus === 'Pending' || row.CertificateStatus === 'In Progress'
+    ).length;
+
+    const total = required + active + pending || data.length;
+
+    return { required, active, pending, total };
+  }, [data]);
+
+  const maxValue = stats.total || 10;
+
   return (
     <div className="dashboard-card">
       <div className="dashboard-card-header">
@@ -8,22 +37,22 @@ const RegistrationsCard = () => {
       </div>
       <div className="flex justify-around items-start py-6 px-4">
         <GaugeChart
-          value={0}
-          maxValue={10}
+          value={stats.required}
+          maxValue={maxValue}
           label="Required REGNs/Licenses"
           color="gray"
         />
         <GaugeChart
-          value={2}
-          maxValue={10}
+          value={stats.active}
+          maxValue={maxValue}
           label="Active REGNs/Licenses"
           color="cyan"
         />
         <GaugeChart
-          value={0}
-          maxValue={10}
+          value={stats.pending}
+          maxValue={maxValue}
           label="Pending REGNs/Licenses"
-          color="gray"
+          color="yellow"
         />
       </div>
     </div>
