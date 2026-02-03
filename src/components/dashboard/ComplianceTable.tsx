@@ -46,7 +46,7 @@ const ComplianceTable = () => {
               <tr key={index} className="animate-fade-in" style={{ animationDelay: `${Math.min(index, 10) * 30}ms` }}>
                 <td>{row.ActName}</td>
                 <td>{row.ActivitiesName}</td>
-                <td className="text-primary font-medium">{row.Month}</td>
+                <td className="text-primary font-medium whitespace-nowrap">{row.Month}</td>
                 <td>{row.Location}</td>
                 <td>{row.State}</td>
                 <td>
