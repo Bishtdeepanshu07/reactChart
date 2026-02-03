@@ -41,6 +41,39 @@ const parseExcelDate = (value: any): string => {
   return String(value);
 };
 
+// Parse Excel month field - handles serial numbers and "MMM-yy" format
+const parseExcelMonth = (value: any): string => {
+  if (!value) return '';
+
+  // Handle Excel serial dates for month
+  if (typeof value === 'number' && value > 1 && value < 100000) {
+    const excelEpoch = new Date(1899, 11, 30);
+    const date = new Date(excelEpoch.getTime() + value * 86400000);
+    return format(date, 'MMM-yy'); // Returns "Jan-25" format
+  }
+
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (!trimmed) return trimmed;
+
+    // Try parsing "MMM-yy" format (e.g., "Jan-25")
+    const monthFormats = ['MMM-yy', 'MMM-yyyy', 'MMMM-yy', 'MMMM-yyyy'];
+    for (const fmt of monthFormats) {
+      const parsed = parse(trimmed, fmt, new Date());
+      if (isValid(parsed)) {
+        return format(parsed, 'MMM-yy');
+      }
+    }
+    return trimmed;
+  }
+
+  if (value instanceof Date && isValid(value)) {
+    return format(value, 'MMM-yy');
+  }
+
+  return String(value);
+};
+
 const ExcelUploader = () => {
   const { setData, setIsLoading, fileName, setFileName, data } = useExcelData();
 
@@ -58,7 +91,7 @@ const ExcelUploader = () => {
 
         // Map Excel columns to our interface
         const mappedData: ComplianceRow[] = jsonData.map((row: any) => ({
-          Month: row['Month'] || '',
+          Month: parseExcelMonth(row['Month']),
           Qtr: row['Qtr'] || '',
           Year: row['Year'] || '',
           CompanyName: row['Company Name'] || '',
