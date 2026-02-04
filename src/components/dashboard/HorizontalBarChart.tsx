@@ -50,13 +50,13 @@ const HorizontalBarChart = () => {
 
   return (
     <div className="dashboard-card">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <ResponsiveContainer width="100%" height={280}>
+      <div className="flex flex-col lg:flex-row items-start justify-between gap-2 sm:gap-4 mb-4">
+        <div className="flex-1 w-full overflow-x-auto">
+          <ResponsiveContainer width="100%" height={200} minWidth={300}>
             <BarChart
               layout="vertical"
               data={chartData}
-              margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
+              margin={{ top: 5, right: 15, left: 60, bottom: 5 }}
               barCategoryGap="20%"
             >
               <XAxis type="number" hide />
@@ -65,8 +65,8 @@ const HorizontalBarChart = () => {
                 dataKey="name" 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'hsl(215 20% 65%)', fontSize: 12 }}
-                width={80}
+                tick={{ fill: 'hsl(215 20% 65%)', fontSize: 10 }}
+                width={60}
               />
               <Bar dataKey="completed" stackId="a" fill={COLORS.completed} radius={[0, 0, 0, 0]}>
                 <LabelList 
@@ -82,7 +82,7 @@ const HorizontalBarChart = () => {
                   dataKey="notDue" 
                   position="center" 
                   fill="white" 
-                  fontSize={11}
+                  fontSize={9}
                   formatter={(value: number) => value > 0 ? value : ''}
                 />
               </Bar>
@@ -91,7 +91,7 @@ const HorizontalBarChart = () => {
                   dataKey="pending" 
                   position="center" 
                   fill="white" 
-                  fontSize={11}
+                  fontSize={9}
                   formatter={(value: number) => value > 0 ? value : ''}
                 />
               </Bar>
@@ -99,17 +99,17 @@ const HorizontalBarChart = () => {
           </ResponsiveContainer>
         </div>
         
-        <div className="flex flex-col gap-2 ml-4 text-xs">
+        <div className="flex flex-row lg:flex-col gap-2 sm:gap-3 lg:ml-4 text-xs sm:text-sm flex-wrap lg:flex-nowrap w-full lg:w-auto justify-center lg:justify-start">
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-dashboard-cyan"></span>
-            <span className="text-muted-foreground">Completed Within TAT</span>
+            <span className="w-3 h-3 rounded-full bg-dashboard-cyan flex-shrink-0"></span>
+            <span className="text-muted-foreground">Completed</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-dashboard-gray"></span>
+            <span className="w-3 h-3 rounded-full bg-dashboard-gray flex-shrink-0"></span>
             <span className="text-muted-foreground">Not Due</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-dashboard-yellow"></span>
+            <span className="w-3 h-3 rounded-full bg-dashboard-yellow flex-shrink-0"></span>
             <span className="text-muted-foreground">Pending</span>
           </div>
         </div>

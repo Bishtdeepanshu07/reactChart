@@ -23,8 +23,8 @@ const GaugeChart = ({ value, maxValue, label, color }: GaugeChartProps) => {
   ];
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative w-32 h-20">
+    <div className="flex flex-col items-center flex-shrink-0 w-24 sm:w-32">
+      <div className="relative w-20 sm:w-32 h-12 sm:h-20">
         <ResponsiveContainer width="100%" height={80}>
           <PieChart>
             <Pie
@@ -45,12 +45,12 @@ const GaugeChart = ({ value, maxValue, label, color }: GaugeChartProps) => {
           </PieChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex items-end justify-center pb-1">
-          <span className="gauge-value" style={{ color: COLORS[color] }}>
+          <span className="gauge-value text-2xl sm:text-4xl" style={{ color: COLORS[color] }}>
             {value}
           </span>
         </div>
       </div>
-      <p className="gauge-label mt-2 max-w-[120px]">{label}</p>
+      <p className="gauge-label mt-1 sm:mt-2 max-w-[90px] sm:max-w-[120px] text-xs sm:text-sm">{label}</p>
     </div>
   );
 };

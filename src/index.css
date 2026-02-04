@@ -100,23 +100,23 @@
 
 @layer components {
   .dashboard-card {
-    @apply bg-card rounded-lg border border-border p-4;
+    @apply bg-card rounded-lg border border-border p-2 sm:p-4;
   }
 
   .dashboard-card-header {
-    @apply bg-gradient-to-r from-primary/20 to-primary/10 rounded-t-lg px-4 py-2 text-center font-semibold text-foreground;
+    @apply bg-gradient-to-r from-primary/20 to-primary/10 rounded-t-lg px-2 sm:px-4 py-2 text-center font-semibold text-foreground text-sm sm:text-base;
   }
 
   .gauge-value {
-    @apply text-4xl font-bold;
+    @apply font-bold;
   }
 
   .gauge-label {
-    @apply text-sm text-muted-foreground text-center;
+    @apply text-muted-foreground text-center;
   }
 
   .nav-tab {
-    @apply px-4 py-2 text-sm font-medium transition-colors rounded-md;
+    @apply px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors rounded-md whitespace-nowrap;
   }
 
   .nav-tab-active {
@@ -128,7 +128,7 @@
   }
 
   .month-pill {
-    @apply px-3 py-1.5 text-sm font-medium rounded transition-colors;
+    @apply px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium rounded transition-colors whitespace-nowrap;
   }
 
   .month-pill-active {
@@ -140,15 +140,15 @@
   }
 
   .data-table {
-    @apply w-full text-sm;
+    @apply w-full text-xs sm:text-sm;
   }
 
   .data-table th {
-    @apply px-3 py-2 text-left font-medium text-muted-foreground bg-secondary/50;
+    @apply px-2 sm:px-3 py-1.5 sm:py-2 text-left font-medium text-muted-foreground bg-secondary/50 whitespace-nowrap;
   }
 
   .data-table td {
-    @apply px-3 py-2 border-b border-border;
+    @apply px-2 sm:px-3 py-1.5 sm:py-2 border-b border-border;
   }
 
   .data-table tr:hover {
@@ -156,6 +156,6 @@
   }
 
   .filter-select {
-    @apply bg-secondary border border-border rounded-md px-3 py-2 text-sm text-foreground;
+    @apply bg-secondary border border-border rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-foreground;
   }
 }

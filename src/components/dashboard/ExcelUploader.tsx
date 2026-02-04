@@ -91,31 +91,31 @@ const ExcelUploader = () => {
   };
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
       {fileName ? (
-        <div className="flex items-center gap-2 px-3 py-2 bg-secondary rounded-md">
-          <FileSpreadsheet className="w-4 h-4 text-primary" />
-          <span className="text-sm text-foreground">{fileName}</span>
-          <span className="text-xs text-muted-foreground">({data.length} records)</span>
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 bg-secondary rounded-md text-xs sm:text-sm w-full sm:w-auto min-w-0">
+          <FileSpreadsheet className="w-4 h-4 text-primary flex-shrink-0" />
+          <span className="text-foreground truncate">{fileName}</span>
+          <span className="text-xs text-muted-foreground flex-shrink-0">({data.length})</span>
           <button
             onClick={handleClear}
-            className="ml-2 p-1 hover:bg-muted rounded transition-colors"
+            className="ml-1 sm:ml-2 p-1 hover:bg-muted rounded transition-colors flex-shrink-0"
           >
             <X className="w-3 h-3 text-muted-foreground hover:text-foreground" />
           </button>
         </div>
       ) : (
-        <label className="cursor-pointer">
+        <label className="cursor-pointer w-full sm:w-auto">
           <input
             type="file"
             accept=".xlsx,.xls"
             onChange={handleFileChange}
             className="hidden"
           />
-          <Button variant="outline" size="sm" asChild>
-            <span className="flex items-center gap-2">
-              <Upload className="w-4 h-4" />
-              Upload Excel
+          <Button variant="outline" size="sm" asChild className="w-full sm:w-auto">
+            <span className="flex items-center justify-center sm:justify-start gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Upload className="w-4 h-4 flex-shrink-0" />
+              <span>Upload Excel</span>
             </span>
           </Button>
         </label>

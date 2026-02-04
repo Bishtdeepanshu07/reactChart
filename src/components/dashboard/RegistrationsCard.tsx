@@ -6,7 +6,7 @@ const RegistrationsCard = () => {
       <div className="dashboard-card-header">
         <h3 className="text-lg font-semibold">Registrations</h3>
       </div>
-      <div className="flex justify-around items-start py-6 px-4">
+      <div className="flex justify-around items-center py-4 sm:py-6 px-1 sm:px-4 overflow-x-auto">
         <GaugeChart
           value={0}
           maxValue={10}
