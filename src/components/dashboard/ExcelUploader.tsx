@@ -5,6 +5,74 @@ import { useExcelData } from '@/contexts/ExcelContext';
 import { ComplianceRow } from '@/types/compliance';
 import * as XLSX from 'xlsx';
 import { toast } from 'sonner';
+import { format, parse, isValid } from 'date-fns';
+
+// Parse Excel dates - handles serial numbers and various string formats
+const parseExcelDate = (value: any): string => {
+  if (!value) return '';
+
+  // Handle Excel serial dates (numbers between 1 and 100000 are likely dates)
+  if (typeof value === 'number' && value > 1 && value < 100000) {
+    const excelEpoch = new Date(1899, 11, 30); // December 30, 1899
+    const date = new Date(excelEpoch.getTime() + value * 86400000);
+    return format(date, 'dd/MM/yyyy');
+  }
+
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (!trimmed) return '';
+
+    // Try multiple formats
+    const formats = ['dd/MM/yyyy', 'MM/dd/yyyy', 'yyyy-MM-dd', 'dd-MM-yyyy', 'dd/MM/yy'];
+    for (const fmt of formats) {
+      const parsed = parse(trimmed, fmt, new Date());
+      if (isValid(parsed)) {
+        return format(parsed, 'dd/MM/yyyy');
+      }
+    }
+    // Return original if no format matched
+    return trimmed;
+  }
+
+  if (value instanceof Date && isValid(value)) {
+    return format(value, 'dd/MM/yyyy');
+  }
+
+  return String(value);
+};
+
+// Parse Excel month field - handles serial numbers and "MMM-yy" format
+const parseExcelMonth = (value: any): string => {
+  if (!value) return '';
+
+  // Handle Excel serial dates for month
+  if (typeof value === 'number' && value > 1 && value < 100000) {
+    const excelEpoch = new Date(1899, 11, 30);
+    const date = new Date(excelEpoch.getTime() + value * 86400000);
+    return format(date, 'MMM-yy'); // Returns "Jan-25" format
+  }
+
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (!trimmed) return trimmed;
+
+    // Try parsing "MMM-yy" format (e.g., "Jan-25")
+    const monthFormats = ['MMM-yy', 'MMM-yyyy', 'MMMM-yy', 'MMMM-yyyy'];
+    for (const fmt of monthFormats) {
+      const parsed = parse(trimmed, fmt, new Date());
+      if (isValid(parsed)) {
+        return format(parsed, 'MMM-yy');
+      }
+    }
+    return trimmed;
+  }
+
+  if (value instanceof Date && isValid(value)) {
+    return format(value, 'MMM-yy');
+  }
+
+  return String(value);
+};
 
 const ExcelUploader = () => {
   const { setData, setIsLoading, fileName, setFileName, data } = useExcelData();
@@ -23,7 +91,7 @@ const ExcelUploader = () => {
 
         // Map Excel columns to our interface
         const mappedData: ComplianceRow[] = jsonData.map((row: any) => ({
-          Month: row['Month'] || '',
+          Month: parseExcelMonth(row['Month']),
           Qtr: row['Qtr'] || '',
           Year: row['Year'] || '',
           CompanyName: row['Company Name'] || '',
@@ -35,8 +103,8 @@ const ExcelUploader = () => {
           Zone: row['Zone'] || '',
           State: row['State'] || '',
           TaskCycle: row['Task Cycle'] || '',
-          DueDate: row['Due Date'] || '',
-          DateOfTaskCompletion: row['Date of Task Completion'] || '',
+          DueDate: parseExcelDate(row['Due Date']),
+          DateOfTaskCompletion: parseExcelDate(row['Date of Task Completion']),
           ComplianceScore: Number(row['Compliance Score']) || 0,
           Completed: Number(row['Completed']) || 0,
           Pending: Number(row['Pending']) || 0,
@@ -50,8 +118,8 @@ const ExcelUploader = () => {
           ClientSpocPerson: row['Client Spoc Person'] || '',
           CertificateNumber: row['Certificate Number'] || '',
           CertificateStatus: row['Certificate Status'] || '',
-          ValidityFrom: row['Validity From'] || '',
-          ValidityTo: row['Validity To'] || '',
+          ValidityFrom: parseExcelDate(row['Validity From']),
+          ValidityTo: parseExcelDate(row['Validity To']),
           DueIn: row['Due in'] || '',
         }));
 
