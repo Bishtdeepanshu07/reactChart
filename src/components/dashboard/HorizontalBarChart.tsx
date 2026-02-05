@@ -10,13 +10,18 @@ const COLORS = {
 };
 
 const HorizontalBarChart = () => {
-  const { data } = useExcelData();
+  const { data, selectedMonths } = useExcelData();
+
+  const filteredData = useMemo(() => {
+    if (selectedMonths.length === 0) return data;
+    return data.filter(row => selectedMonths.includes(row.Month));
+  }, [data, selectedMonths]);
 
   const chartData = useMemo(() => {
-    if (data.length === 0) return [];
+    if (filteredData.length === 0) return [];
 
     // Group by Act Name and aggregate counts
-    const grouped = data.reduce((acc, row) => {
+    const grouped = filteredData.reduce((acc, row) => {
       const actName = row.ActName || 'Unknown';
       if (!acc[actName]) {
         acc[actName] = { name: actName, completed: 0, notDue: 0, pending: 0 };
@@ -35,14 +40,14 @@ const HorizontalBarChart = () => {
         ...item,
         name: item.name.length > 15 ? item.name.substring(0, 12) + '...' : item.name,
       }));
-  }, [data]);
+  }, [filteredData]);
 
-  if (data.length === 0) {
+  if (filteredData.length === 0) {
     return (
       <div className="dashboard-card flex flex-col items-center justify-center min-h-[280px] gap-3">
         <FileSpreadsheet className="w-12 h-12 text-muted-foreground" />
         <p className="text-muted-foreground text-center text-sm">
-          No data available. Upload an Excel file to see chart.
+          {data.length === 0 ? 'No data available. Upload an Excel file to see chart.' : 'No data for selected months.'}
         </p>
       </div>
     );

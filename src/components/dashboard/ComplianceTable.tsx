@@ -1,8 +1,14 @@
 import { useExcelData } from '@/contexts/ExcelContext';
 import { FileSpreadsheet } from 'lucide-react';
+import { useMemo } from 'react';
 
 const ComplianceTable = () => {
-  const { data, isLoading } = useExcelData();
+  const { data, isLoading, selectedMonths } = useExcelData();
+
+  const filteredData = useMemo(() => {
+    if (selectedMonths.length === 0) return data;
+    return data.filter(row => selectedMonths.includes(row.Month));
+  }, [data, selectedMonths]);
 
   if (isLoading) {
     return (
@@ -12,12 +18,12 @@ const ComplianceTable = () => {
     );
   }
 
-  if (data.length === 0) {
+  if (filteredData.length === 0) {
     return (
       <div className="dashboard-card h-full flex flex-col items-center justify-center min-h-[400px] gap-3">
         <FileSpreadsheet className="w-12 h-12 text-muted-foreground" />
         <p className="text-muted-foreground text-center">
-          No data loaded. Upload an Excel file to view compliance data.
+          {data.length === 0 ? 'No data loaded. Upload an Excel file to view compliance data.' : 'No data for selected months.'}
         </p>
       </div>
     );
@@ -42,7 +48,7 @@ const ComplianceTable = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((row, index) => (
+            {filteredData.map((row, index) => (
               <tr key={index} className="animate-fade-in" style={{ animationDelay: `${Math.min(index, 10) * 30}ms` }}>
                 <td>{row.ActName}</td>
                 <td>{row.ActivitiesName}</td>
