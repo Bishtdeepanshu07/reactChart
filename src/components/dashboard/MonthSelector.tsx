@@ -4,7 +4,6 @@ import { useExcelData } from '@/contexts/ExcelContext';
 
 const MonthSelector = () => {
   const { data, selectedMonths, setSelectedMonths } = useExcelData();
-  const [selectAll, setSelectAll] = useState(false);
 
   // Extract unique months from the data
   const months = useMemo(() => {
@@ -15,11 +14,13 @@ const MonthSelector = () => {
     }));
   }, [data]);
 
+  // Derive selectAll state from actual selection
+  const selectAll = months.length > 0 && selectedMonths.length === months.length;
+
   // Auto-select all months when data is loaded
   useEffect(() => {
     if (months.length > 0 && selectedMonths.length === 0) {
       setSelectedMonths(months.map(m => m.id));
-      setSelectAll(true);
     }
   }, [months, selectedMonths.length, setSelectedMonths]);
 
@@ -29,7 +30,6 @@ const MonthSelector = () => {
         ? prev.filter((id) => id !== monthId)
         : [...prev, monthId]
     );
-    setSelectAll(false);
   };
 
   const handleSelectAll = () => {
@@ -38,7 +38,6 @@ const MonthSelector = () => {
     } else {
       setSelectedMonths(months.map((m) => m.id));
     }
-    setSelectAll(!selectAll);
   };
 
   if (months.length === 0) {
