@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Upload, FileSpreadsheet, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useExcelData } from '@/contexts/ExcelContext';
-import { ComplianceRow } from '@/types/compliance';
+import { ComplianceRow, RegistrationRow } from '@/types/compliance';
 import * as XLSX from 'xlsx';
 import { toast } from 'sonner';
 import { format, parse, isValid } from 'date-fns';
@@ -75,7 +75,7 @@ const parseExcelMonth = (value: any): string => {
 };
 
 const ExcelUploader = () => {
-  const { setData, setIsLoading, fileName, setFileName, data } = useExcelData();
+  const { setData, setRegistrationData, setIsLoading, fileName, setFileName, data } = useExcelData();
 
   const parseExcel = useCallback((file: File) => {
     setIsLoading(true);
@@ -85,11 +85,12 @@ const ExcelUploader = () => {
       try {
         const arrayBuffer = e.target?.result as ArrayBuffer;
         const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-        // Map Excel columns to our interface
+        // Parse first sheet (Compliance data)
+        const sheet1Name = workbook.SheetNames[0];
+        const worksheet1 = workbook.Sheets[sheet1Name];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet1);
+
         const mappedData: ComplianceRow[] = jsonData.map((row: any) => ({
           Month: parseExcelMonth(row['Month']),
           Qtr: row['Qtr'] || '',
@@ -124,6 +125,38 @@ const ExcelUploader = () => {
         }));
 
         setData(mappedData);
+
+        // Parse second sheet (Registration data) if exists
+        if (workbook.SheetNames.length >= 2) {
+          const sheet2Name = workbook.SheetNames[1];
+          const worksheet2 = workbook.Sheets[sheet2Name];
+          const jsonData2 = XLSX.utils.sheet_to_json(worksheet2);
+
+          const mappedRegistrationData: RegistrationRow[] = jsonData2.map((row: any) => ({
+            CompanyName: row['Company Name'] || '',
+            State: row['State'] || '',
+            City: row['City'] || '',
+            Address: row['Address'] || '',
+            EmployerName: row['Employer Name'] || '',
+            Type: row['Type'] || '',
+            HeadcountSalary: Number(row['Headcount as per Salary']) || 0,
+            HeadcountRC: Number(row['Headcount as per RC']) || 0,
+            RCNo: row['RC No.'] || '',
+            DateOfObtained: parseExcelDate(row['Date Of Obtained']),
+            Validity: row['Validity'] || '',
+            Status: row['Status'] || '',
+            Completed: Number(row['Completed']) || 0,
+            FreshRequired: Number(row['Fresh Required']) || 0,
+            Exemption: Number(row['Exemption']) || 0,
+            Count: Number(row['Count']) || 0,
+            RenewalStatus: row['Renewal Status'] || '',
+            AmendmentStatus: row['Amendment status'] || '',
+            Days: row['days'] || '',
+          }));
+
+          setRegistrationData(mappedRegistrationData);
+        }
+
         setFileName(file.name);
         toast.success(`Loaded ${mappedData.length} records from ${file.name}`);
       } catch (error) {
@@ -140,7 +173,7 @@ const ExcelUploader = () => {
     };
 
     reader.readAsArrayBuffer(file);
-  }, [setData, setFileName, setIsLoading]);
+  }, [setData, setRegistrationData, setFileName, setIsLoading]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -155,6 +188,7 @@ const ExcelUploader = () => {
 
   const handleClear = () => {
     setData([]);
+    setRegistrationData([]);
     setFileName('');
   };
 

@@ -31,9 +31,33 @@ export interface ComplianceRow {
   DueIn: string;
 }
 
+export interface RegistrationRow {
+  CompanyName: string;
+  State: string;
+  City: string;
+  Address: string;
+  EmployerName: string;
+  Type: string;
+  HeadcountSalary: number;
+  HeadcountRC: number;
+  RCNo: string;
+  DateOfObtained: string;
+  Validity: string;
+  Status: string;
+  Completed: number;
+  FreshRequired: number;
+  Exemption: number;
+  Count: number;
+  RenewalStatus: string;
+  AmendmentStatus: string;
+  Days: string;
+}
+
 export interface ExcelContextType {
   data: ComplianceRow[];
   setData: (data: ComplianceRow[]) => void;
+  registrationData: RegistrationRow[];
+  setRegistrationData: (data: RegistrationRow[]) => void;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
   fileName: string;
