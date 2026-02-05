@@ -3,32 +3,26 @@ import GaugeChart from './GaugeChart';
 import { useExcelData } from '@/contexts/ExcelContext';
 
 const RegistrationsCard = () => {
-  const { data } = useExcelData();
+  const { registrationData } = useExcelData();
 
   const stats = useMemo(() => {
-    if (data.length === 0) {
-      return { required: 0, active: 0, pending: 0, total: 0 };
+    if (registrationData.length === 0) {
+      return { freshRequired: 0, active: 0, pending: 0, total: 0 };
     }
 
-    // Count registrations based on CertificateStatus
-    const required = data.filter(row => 
-      row.CertificateStatus === 'Required' || row.CertificateStatus === 'Expired'
-    ).length;
-    
-    const active = data.filter(row => 
-      row.CertificateStatus === 'Active' || row.CertificateStatus === 'Valid'
-    ).length;
-    
-    const pending = data.filter(row => 
-      row.CertificateStatus === 'Pending' || row.CertificateStatus === 'In Progress'
+    // Sum values from 2nd sheet registration data
+    const freshRequired = registrationData.reduce((sum, row) => sum + row.FreshRequired, 0);
+    const active = registrationData.filter(row => row.Status === 'Active').length;
+    const pending = registrationData.filter(row => 
+      row.RenewalStatus === 'Pending' || row.AmendmentStatus === 'Pending'
     ).length;
 
-    const total = required + active + pending || data.length;
+    const total = registrationData.length;
 
-    return { required, active, pending, total };
-  }, [data]);
+    return { freshRequired, active, pending, total };
+  }, [registrationData]);
 
-  const maxValue = stats.total || 10;
+  const maxValue = Math.max(stats.freshRequired, stats.active, stats.pending, stats.total) || 10;
 
   return (
     <div className="dashboard-card">
@@ -37,21 +31,21 @@ const RegistrationsCard = () => {
       </div>
       <div className="flex justify-around items-center py-4 sm:py-6 px-1 sm:px-4 overflow-x-auto">
         <GaugeChart
-          value={stats.required}
+          value={stats.freshRequired}
           maxValue={maxValue}
-          label="Required REGNs/Licenses"
+          label="Fresh Required"
           color="gray"
         />
         <GaugeChart
           value={stats.active}
           maxValue={maxValue}
-          label="Active REGNs/Licenses"
+          label="Active"
           color="cyan"
         />
         <GaugeChart
           value={stats.pending}
           maxValue={maxValue}
-          label="Pending REGNs/Licenses"
+          label="Pending"
           color="yellow"
         />
       </div>
