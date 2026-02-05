@@ -3,20 +3,25 @@ import GaugeChart from './GaugeChart';
 import { useExcelData } from '@/contexts/ExcelContext';
 
 const ComplianceCard = () => {
-  const { data } = useExcelData();
+  const { data, selectedMonths } = useExcelData();
+
+  const filteredData = useMemo(() => {
+    if (selectedMonths.length === 0) return data;
+    return data.filter(row => selectedMonths.includes(row.Month));
+  }, [data, selectedMonths]);
 
   const stats = useMemo(() => {
-    if (data.length === 0) {
+    if (filteredData.length === 0) {
       return { notDue: 0, pending: 0, completed: 0, total: 0 };
     }
 
-    const notDue = data.reduce((sum, row) => sum + (row.NotDue || 0), 0);
-    const pending = data.reduce((sum, row) => sum + (row.Pending || 0), 0);
-    const completed = data.reduce((sum, row) => sum + (row.Completed || 0), 0);
+    const notDue = filteredData.reduce((sum, row) => sum + (row.NotDue || 0), 0);
+    const pending = filteredData.reduce((sum, row) => sum + (row.Pending || 0), 0);
+    const completed = filteredData.reduce((sum, row) => sum + (row.Completed || 0), 0);
     const total = notDue + pending + completed;
 
     return { notDue, pending, completed, total };
-  }, [data]);
+  }, [filteredData]);
 
   const maxValue = stats.total || 30;
 

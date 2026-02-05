@@ -62,4 +62,6 @@ export interface ExcelContextType {
   setIsLoading: (loading: boolean) => void;
   fileName: string;
   setFileName: (name: string) => void;
+  selectedMonths: string[];
+  setSelectedMonths: React.Dispatch<React.SetStateAction<string[]>>;
 }

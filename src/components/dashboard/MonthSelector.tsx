@@ -1,17 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Check } from 'lucide-react';
-
-const months = [
-  { id: 'jan2025', label: 'Jan, 2025' },
-  { id: 'feb2025', label: 'Feb, 2025' },
-  { id: 'april2025', label: 'April, 2025' },
-  { id: 'may2025', label: 'May, 2025' },
-  { id: 'jun2025', label: 'Jun, 2025' },
-];
+import { useExcelData } from '@/contexts/ExcelContext';
 
 const MonthSelector = () => {
-  const [selectedMonths, setSelectedMonths] = useState(['jan2025']);
+  const { data, selectedMonths, setSelectedMonths } = useExcelData();
   const [selectAll, setSelectAll] = useState(false);
+
+  // Extract unique months from the data
+  const months = useMemo(() => {
+    const uniqueMonths = [...new Set(data.map(row => row.Month).filter(Boolean))];
+    return uniqueMonths.map(month => ({
+      id: month,
+      label: month,
+    }));
+  }, [data]);
+
+  // Auto-select all months when data is loaded
+  useEffect(() => {
+    if (months.length > 0 && selectedMonths.length === 0) {
+      setSelectedMonths(months.map(m => m.id));
+      setSelectAll(true);
+    }
+  }, [months, selectedMonths.length, setSelectedMonths]);
 
   const toggleMonth = (monthId: string) => {
     setSelectedMonths((prev) =>
@@ -19,6 +29,7 @@ const MonthSelector = () => {
         ? prev.filter((id) => id !== monthId)
         : [...prev, monthId]
     );
+    setSelectAll(false);
   };
 
   const handleSelectAll = () => {
@@ -29,6 +40,14 @@ const MonthSelector = () => {
     }
     setSelectAll(!selectAll);
   };
+
+  if (months.length === 0) {
+    return (
+      <div className="flex items-center text-muted-foreground text-sm">
+        No months available
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-wrap items-center gap-1 sm:gap-2 w-full">

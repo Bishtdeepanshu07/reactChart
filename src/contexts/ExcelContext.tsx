@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
 import { ComplianceRow, RegistrationRow, ExcelContextType } from '@/types/compliance';
 
 const ExcelContext = createContext<ExcelContextType | undefined>(undefined);
@@ -8,9 +8,10 @@ export const ExcelProvider = ({ children }: { children: ReactNode }) => {
   const [registrationData, setRegistrationData] = useState<RegistrationRow[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [fileName, setFileName] = useState('');
+  const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
 
   return (
-    <ExcelContext.Provider value={{ data, setData, registrationData, setRegistrationData, isLoading, setIsLoading, fileName, setFileName }}>
+    <ExcelContext.Provider value={{ data, setData, registrationData, setRegistrationData, isLoading, setIsLoading, fileName, setFileName, selectedMonths, setSelectedMonths }}>
       {children}
     </ExcelContext.Provider>
   );
