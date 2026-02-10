@@ -10,12 +10,16 @@ const COLORS = {
 };
 
 const HorizontalBarChart = () => {
-  const { data, selectedMonths } = useExcelData();
+  const { data, selectedMonths, selectedActs, selectedActivities, selectedLocations } = useExcelData();
 
   const filteredData = useMemo(() => {
-    if (selectedMonths.length === 0) return data;
-    return data.filter(row => selectedMonths.includes(row.Month));
-  }, [data, selectedMonths]);
+    let filtered = data;
+    if (selectedMonths.length > 0) filtered = filtered.filter(row => selectedMonths.includes(row.Month));
+    if (selectedActs.length > 0) filtered = filtered.filter(row => selectedActs.includes(row.ActName));
+    if (selectedActivities.length > 0) filtered = filtered.filter(row => selectedActivities.includes(row.ActivitiesName));
+    if (selectedLocations.length > 0) filtered = filtered.filter(row => selectedLocations.includes(row.Location));
+    return filtered;
+  }, [data, selectedMonths, selectedActs, selectedActivities, selectedLocations]);
 
   const chartData = useMemo(() => {
     if (filteredData.length === 0) return [];
