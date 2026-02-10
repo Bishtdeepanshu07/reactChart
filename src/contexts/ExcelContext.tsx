@@ -9,9 +9,12 @@ export const ExcelProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [fileName, setFileName] = useState('');
   const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
+  const [selectedActs, setSelectedActs] = useState<string[]>([]);
+  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
 
   return (
-    <ExcelContext.Provider value={{ data, setData, registrationData, setRegistrationData, isLoading, setIsLoading, fileName, setFileName, selectedMonths, setSelectedMonths }}>
+    <ExcelContext.Provider value={{ data, setData, registrationData, setRegistrationData, isLoading, setIsLoading, fileName, setFileName, selectedMonths, setSelectedMonths, selectedActs, setSelectedActs, selectedActivities, setSelectedActivities, selectedLocations, setSelectedLocations }}>
       {children}
     </ExcelContext.Provider>
   );

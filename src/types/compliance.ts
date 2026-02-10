@@ -64,4 +64,10 @@ export interface ExcelContextType {
   setFileName: (name: string) => void;
   selectedMonths: string[];
   setSelectedMonths: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedActs: string[];
+  setSelectedActs: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedActivities: string[];
+  setSelectedActivities: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedLocations: string[];
+  setSelectedLocations: React.Dispatch<React.SetStateAction<string[]>>;
 }
