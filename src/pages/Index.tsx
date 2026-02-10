@@ -6,6 +6,7 @@ import ComplianceTable from '@/components/dashboard/ComplianceTable';
 import FilterSection from '@/components/dashboard/FilterSection';
 import HorizontalBarChart from '@/components/dashboard/HorizontalBarChart';
 import ExcelUploader from '@/components/dashboard/ExcelUploader';
+import ThemeToggle from '@/components/dashboard/ThemeToggle';
 import { ExcelProvider } from '@/contexts/ExcelContext';
 
 const Index = () => {
@@ -18,6 +19,7 @@ const Index = () => {
           <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
             <ExcelUploader />
             <MonthSelector />
+            <ThemeToggle />
           </div>
         </header>
 
