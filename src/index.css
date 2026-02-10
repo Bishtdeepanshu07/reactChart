@@ -6,32 +6,32 @@
 
 @layer base {
   :root {
-    --background: 230 40% 12%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 95%;
 
-    --card: 230 35% 18%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 230 35% 18%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 95%;
 
     --primary: 174 72% 56%;
-    --primary-foreground: 230 40% 12%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 230 30% 25%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 230 25% 22%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 55%;
 
     --accent: 45 93% 58%;
-    --accent-foreground: 230 40% 12%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 230 25% 28%;
-    --input: 230 25% 28%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
     --ring: 174 72% 56%;
 
     --radius: 0.5rem;
@@ -39,20 +39,20 @@
     /* Custom dashboard colors */
     --dashboard-cyan: 174 72% 56%;
     --dashboard-yellow: 45 93% 58%;
-    --dashboard-gray: 230 20% 45%;
+    --dashboard-gray: 0 0% 40%;
     --dashboard-purple: 260 60% 55%;
-    --dashboard-dark: 230 40% 12%;
-    --dashboard-card: 230 35% 18%;
-    --dashboard-card-light: 230 30% 22%;
-    --dashboard-border: 230 25% 30%;
+    --dashboard-dark: 0 0% 0%;
+    --dashboard-card: 0 0% 7%;
+    --dashboard-card-light: 0 0% 11%;
+    --dashboard-border: 0 0% 18%;
 
-    --sidebar-background: 230 40% 10%;
-    --sidebar-foreground: 210 40% 98%;
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 0% 95%;
     --sidebar-primary: 174 72% 56%;
-    --sidebar-primary-foreground: 230 40% 12%;
-    --sidebar-accent: 230 30% 25%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 230 25% 28%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 16%;
     --sidebar-ring: 174 72% 56%;
   }
 
@@ -105,32 +105,32 @@
   }
 
   .dark {
-    --background: 230 40% 12%;
-    --foreground: 210 40% 98%;
-    --card: 230 35% 18%;
-    --card-foreground: 210 40% 98%;
-    --popover: 230 35% 18%;
-    --popover-foreground: 210 40% 98%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 95%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 95%;
     --primary: 174 72% 56%;
-    --primary-foreground: 230 40% 12%;
-    --secondary: 230 30% 25%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 230 25% 22%;
-    --muted-foreground: 215 20% 65%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 55%;
     --accent: 45 93% 58%;
-    --accent-foreground: 230 40% 12%;
+    --accent-foreground: 0 0% 0%;
     --destructive: 0 62% 30%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 230 25% 28%;
-    --input: 230 25% 28%;
+    --destructive-foreground: 0 0% 95%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
     --ring: 174 72% 56%;
-    --sidebar-background: 230 40% 10%;
-    --sidebar-foreground: 210 40% 98%;
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 0% 95%;
     --sidebar-primary: 174 72% 56%;
-    --sidebar-primary-foreground: 230 40% 12%;
-    --sidebar-accent: 230 30% 25%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 230 25% 28%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 16%;
     --sidebar-ring: 174 72% 56%;
   }
 }
