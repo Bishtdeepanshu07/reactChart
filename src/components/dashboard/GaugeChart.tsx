@@ -5,6 +5,7 @@ interface GaugeChartProps {
   maxValue: number;
   label: string;
   color: 'cyan' | 'yellow' | 'gray';
+  onClick?: () => void;
 }
 
 const COLORS = {
@@ -13,9 +14,8 @@ const COLORS = {
   gray: 'hsl(230 20% 45%)',
 };
 
-const GaugeChart = ({ value, maxValue, label, color }: GaugeChartProps) => {
+const GaugeChart = ({ value, maxValue, label, color, onClick }: GaugeChartProps) => {
   const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
-  const fillAngle = (percentage / 100) * 180;
   
   const data = [
     { name: 'filled', value: percentage },
@@ -23,7 +23,12 @@ const GaugeChart = ({ value, maxValue, label, color }: GaugeChartProps) => {
   ];
 
   return (
-    <div className="flex flex-col items-center flex-shrink-0 w-24 sm:w-32">
+    <div
+      className={`flex flex-col items-center flex-shrink-0 w-24 sm:w-32 ${onClick ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+    >
       <div className="relative w-20 sm:w-32 h-12 sm:h-20">
         <ResponsiveContainer width="100%" height={80}>
           <PieChart>
