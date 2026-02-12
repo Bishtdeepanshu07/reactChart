@@ -1,9 +1,25 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import GaugeChart from './GaugeChart';
+import DataPopup from './DataPopup';
 import { useExcelData } from '@/contexts/ExcelContext';
+
+const COMPLIANCE_COLUMNS = [
+  { key: 'ActName', label: 'Act Name' },
+  { key: 'ActivitiesName', label: 'Activity' },
+  { key: 'Month', label: 'Month' },
+  { key: 'Location', label: 'Location' },
+  { key: 'State', label: 'State' },
+  { key: 'TaskCycle', label: 'Task Cycle' },
+  { key: 'DueDate', label: 'Due Date' },
+  { key: 'ComplianceStatus', label: 'Status' },
+  { key: 'CompanyName', label: 'Company' },
+];
+
+type PopupType = 'notDue' | 'pending' | 'completed' | null;
 
 const ComplianceCard = () => {
   const { data, selectedMonths } = useExcelData();
+  const [activePopup, setActivePopup] = useState<PopupType>(null);
 
   const filteredData = useMemo(() => {
     if (selectedMonths.length === 0) return data;
@@ -14,15 +30,24 @@ const ComplianceCard = () => {
     if (filteredData.length === 0) {
       return { notDue: 0, pending: 0, completed: 0, total: 0 };
     }
-
     const notDue = filteredData.reduce((sum, row) => sum + (row.NotDue || 0), 0);
     const pending = filteredData.reduce((sum, row) => sum + (row.Pending || 0), 0);
     const completed = filteredData.reduce((sum, row) => sum + (row.Completed || 0), 0);
     const total = notDue + pending + completed;
-
     return { notDue, pending, completed, total };
   }, [filteredData]);
 
+  const popupData = useMemo(() => {
+    if (!activePopup) return [];
+    return filteredData.filter(row => {
+      if (activePopup === 'notDue') return (row.NotDue || 0) > 0;
+      if (activePopup === 'pending') return (row.Pending || 0) > 0;
+      if (activePopup === 'completed') return (row.Completed || 0) > 0;
+      return false;
+    });
+  }, [filteredData, activePopup]);
+
+  const popupTitle = activePopup === 'notDue' ? 'Not Due' : activePopup === 'pending' ? 'Pending' : 'Completed';
   const maxValue = stats.total || 30;
 
   return (
@@ -31,25 +56,17 @@ const ComplianceCard = () => {
         <h3 className="text-lg font-semibold">Overall Compliance</h3>
       </div>
       <div className="flex justify-around items-center py-4 sm:py-6 px-1 sm:px-4 overflow-x-auto">
-        <GaugeChart
-          value={stats.notDue}
-          maxValue={maxValue}
-          label="Not Due"
-          color="gray"
-        />
-        <GaugeChart
-          value={stats.pending}
-          maxValue={maxValue}
-          label="Pending"
-          color="yellow"
-        />
-        <GaugeChart
-          value={stats.completed}
-          maxValue={maxValue}
-          label="Completed"
-          color="cyan"
-        />
+        <GaugeChart value={stats.notDue} maxValue={maxValue} label="Not Due" color="gray" onClick={() => setActivePopup('notDue')} />
+        <GaugeChart value={stats.pending} maxValue={maxValue} label="Pending" color="yellow" onClick={() => setActivePopup('pending')} />
+        <GaugeChart value={stats.completed} maxValue={maxValue} label="Completed" color="cyan" onClick={() => setActivePopup('completed')} />
       </div>
+      <DataPopup
+        open={activePopup !== null}
+        onOpenChange={(open) => !open && setActivePopup(null)}
+        title={`Compliance - ${popupTitle}`}
+        columns={COMPLIANCE_COLUMNS}
+        data={popupData}
+      />
     </div>
   );
 };
