@@ -77,7 +77,7 @@ const HorizontalBarChart = () => {
                 tick={{ fill: 'hsl(215 20% 65%)', fontSize: 10 }}
                 width={60}
               />
-              <Bar dataKey="completed" stackId="a" fill={COLORS.completed} radius={[0, 0, 0, 0]}>
+              <Bar dataKey="completed" stackId="a" fill={COLORS.completed} radius={[0, 0, 0, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={0}>
                 <LabelList 
                   dataKey="completed" 
                   position="center" 
@@ -86,7 +86,7 @@ const HorizontalBarChart = () => {
                   formatter={(value: number) => value > 0 ? value : ''}
                 />
               </Bar>
-              <Bar dataKey="notDue" stackId="a" fill={COLORS.notDue} radius={[0, 0, 0, 0]}>
+              <Bar dataKey="notDue" stackId="a" fill={COLORS.notDue} radius={[0, 0, 0, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={300}>
                 <LabelList 
                   dataKey="notDue" 
                   position="center" 
@@ -95,7 +95,7 @@ const HorizontalBarChart = () => {
                   formatter={(value: number) => value > 0 ? value : ''}
                 />
               </Bar>
-              <Bar dataKey="pending" stackId="a" fill={COLORS.pending} radius={[0, 4, 4, 0]}>
+              <Bar dataKey="pending" stackId="a" fill={COLORS.pending} radius={[0, 4, 4, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={600}>
                 <LabelList 
                   dataKey="pending" 
                   position="center" 
