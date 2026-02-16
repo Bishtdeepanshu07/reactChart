@@ -7,39 +7,59 @@ import FilterSection from '@/components/dashboard/FilterSection';
 import HorizontalBarChart from '@/components/dashboard/HorizontalBarChart';
 import ExcelUploader from '@/components/dashboard/ExcelUploader';
 import ThemeToggle from '@/components/dashboard/ThemeToggle';
-import { ExcelProvider } from '@/contexts/ExcelContext';
+import AnimatedCard from '@/components/dashboard/AnimatedCard';
+import { ExcelProvider, useExcelData } from '@/contexts/ExcelContext';
 
-const Index = () => {
+const DashboardContent = () => {
+  const { data, registrationData } = useExcelData();
+  const hasData = data.length > 0 || registrationData.length > 0;
+  // Use a key to re-trigger animations when data loads
+  const animationKey = hasData ? 'loaded' : 'empty';
+
   return (
-    <ExcelProvider>
-      <div className="min-h-screen bg-background p-2 sm:p-4 md:p-6">
-        {/* Header */}
-        <header className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
-          <NavigationTabs />
-          <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
-            <ExcelUploader />
-            <MonthSelector />
-            <ThemeToggle />
-          </div>
-        </header>
-
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6">
-          <RegistrationsCard />
-          <ComplianceCard />
+    <div className="min-h-screen bg-background p-2 sm:p-4 md:p-6">
+      {/* Header */}
+      <header className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
+        <NavigationTabs />
+        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
+          <ExcelUploader />
+          <MonthSelector />
+          <ThemeToggle />
         </div>
+      </header>
 
-        {/* Bottom Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
+      {/* Main Grid */}
+      <div key={animationKey} className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6">
+        <AnimatedCard delay={50}>
+          <RegistrationsCard />
+        </AnimatedCard>
+        <AnimatedCard delay={150}>
+          <ComplianceCard />
+        </AnimatedCard>
+      </div>
+
+      {/* Bottom Section */}
+      <div key={`bottom-${animationKey}`} className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
+        <AnimatedCard delay={250}>
           <ComplianceTable />
+        </AnimatedCard>
+        <AnimatedCard delay={350}>
           <div className="space-y-2 sm:space-y-4">
             <div className="dashboard-card">
               <FilterSection />
             </div>
             <HorizontalBarChart />
           </div>
-        </div>
+        </AnimatedCard>
       </div>
+    </div>
+  );
+};
+
+const Index = () => {
+  return (
+    <ExcelProvider>
+      <DashboardContent />
     </ExcelProvider>
   );
 };

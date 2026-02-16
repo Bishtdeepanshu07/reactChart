@@ -1,3 +1,4 @@
+import { memo, useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 interface GaugeChartProps {
@@ -14,12 +15,31 @@ const COLORS = {
   gray: 'hsl(230 20% 45%)',
 };
 
-const GaugeChart = ({ value, maxValue, label, color, onClick }: GaugeChartProps) => {
-  const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
-  
+const GaugeChart = memo(({ value, maxValue, label, color, onClick }: GaugeChartProps) => {
+  const [animatedValue, setAnimatedValue] = useState(0);
+
+  useEffect(() => {
+    // Animate from 0 to target value
+    const target = maxValue > 0 ? (value / maxValue) * 100 : 0;
+    let start = 0;
+    const duration = 800;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setAnimatedValue(eased * target);
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+
+    requestAnimationFrame(animate);
+  }, [value, maxValue]);
+
   const data = [
-    { name: 'filled', value: percentage },
-    { name: 'empty', value: 100 - percentage },
+    { name: 'filled', value: animatedValue },
+    { name: 'empty', value: 100 - animatedValue },
   ];
 
   return (
@@ -58,6 +78,8 @@ const GaugeChart = ({ value, maxValue, label, color, onClick }: GaugeChartProps)
       <p className="gauge-label mt-1 sm:mt-2 max-w-[90px] sm:max-w-[120px] text-xs sm:text-sm">{label}</p>
     </div>
   );
-};
+});
+
+GaugeChart.displayName = 'GaugeChart';
 
 export default GaugeChart;
