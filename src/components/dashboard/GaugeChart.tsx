@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 interface GaugeChartProps {
@@ -15,7 +15,7 @@ const COLORS = {
   gray: 'hsl(230 20% 45%)',
 };
 
-const GaugeChart = memo(({ value, maxValue, label, color, onClick }: GaugeChartProps) => {
+const GaugeChart = ({ value, maxValue, label, color, onClick }: GaugeChartProps) => {
   const [animatedValue, setAnimatedValue] = useState(0);
 
   useEffect(() => {
@@ -78,8 +78,6 @@ const GaugeChart = memo(({ value, maxValue, label, color, onClick }: GaugeChartP
       <p className="gauge-label mt-1 sm:mt-2 max-w-[90px] sm:max-w-[120px] text-xs sm:text-sm">{label}</p>
     </div>
   );
-});
-
-GaugeChart.displayName = 'GaugeChart';
+};
 
 export default GaugeChart;
