@@ -8,13 +8,13 @@ import HorizontalBarChart from '@/components/dashboard/HorizontalBarChart';
 import ExcelUploader from '@/components/dashboard/ExcelUploader';
 import ThemeToggle from '@/components/dashboard/ThemeToggle';
 import AnimatedCard from '@/components/dashboard/AnimatedCard';
+import { CardSkeleton, TableSkeleton, FilterSkeleton } from '@/components/dashboard/DashboardSkeleton';
 import { ExcelProvider, useExcelData } from '@/contexts/ExcelContext';
 import { useRef } from 'react';
 
 const DashboardContent = () => {
-  const { data, registrationData } = useExcelData();
+  const { data, registrationData, isLoading } = useExcelData();
   const hasData = data.length > 0 || registrationData.length > 0;
-  // Track data load count to re-trigger animations each upload
   const loadCount = useRef(0);
   if (hasData) loadCount.current += 1;
   const triggerKey = `${hasData}-${data.length}-${registrationData.length}`;
@@ -33,27 +33,45 @@ const DashboardContent = () => {
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6">
-        <AnimatedCard delay={100} triggerKey={triggerKey}>
-          <RegistrationsCard />
-        </AnimatedCard>
-        <AnimatedCard delay={250} triggerKey={triggerKey}>
-          <ComplianceCard />
-        </AnimatedCard>
+        {isLoading ? (
+          <>
+            <CardSkeleton />
+            <CardSkeleton />
+          </>
+        ) : (
+          <>
+            <AnimatedCard delay={100} triggerKey={triggerKey}>
+              <RegistrationsCard />
+            </AnimatedCard>
+            <AnimatedCard delay={250} triggerKey={triggerKey}>
+              <ComplianceCard />
+            </AnimatedCard>
+          </>
+        )}
       </div>
 
       {/* Bottom Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
-        <AnimatedCard delay={400} triggerKey={triggerKey}>
-          <ComplianceTable />
-        </AnimatedCard>
-        <AnimatedCard delay={550} triggerKey={triggerKey}>
-          <div className="space-y-2 sm:space-y-4">
-            <div className="dashboard-card">
-              <FilterSection />
-            </div>
-            <HorizontalBarChart />
-          </div>
-        </AnimatedCard>
+        {isLoading ? (
+          <>
+            <TableSkeleton />
+            <FilterSkeleton />
+          </>
+        ) : (
+          <>
+            <AnimatedCard delay={400} triggerKey={triggerKey}>
+              <ComplianceTable />
+            </AnimatedCard>
+            <AnimatedCard delay={550} triggerKey={triggerKey}>
+              <div className="space-y-2 sm:space-y-4">
+                <div className="dashboard-card">
+                  <FilterSection />
+                </div>
+                <HorizontalBarChart />
+              </div>
+            </AnimatedCard>
+          </>
+        )}
       </div>
     </div>
   );
