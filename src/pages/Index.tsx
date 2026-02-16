@@ -9,12 +9,15 @@ import ExcelUploader from '@/components/dashboard/ExcelUploader';
 import ThemeToggle from '@/components/dashboard/ThemeToggle';
 import AnimatedCard from '@/components/dashboard/AnimatedCard';
 import { ExcelProvider, useExcelData } from '@/contexts/ExcelContext';
+import { useRef } from 'react';
 
 const DashboardContent = () => {
   const { data, registrationData } = useExcelData();
   const hasData = data.length > 0 || registrationData.length > 0;
-  // Use a key to re-trigger animations when data loads
-  const animationKey = hasData ? 'loaded' : 'empty';
+  // Track data load count to re-trigger animations each upload
+  const loadCount = useRef(0);
+  if (hasData) loadCount.current += 1;
+  const triggerKey = `${hasData}-${data.length}-${registrationData.length}`;
 
   return (
     <div className="min-h-screen bg-background p-2 sm:p-4 md:p-6">
@@ -29,21 +32,21 @@ const DashboardContent = () => {
       </header>
 
       {/* Main Grid */}
-      <div key={animationKey} className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6">
-        <AnimatedCard delay={50}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6">
+        <AnimatedCard delay={100} triggerKey={triggerKey}>
           <RegistrationsCard />
         </AnimatedCard>
-        <AnimatedCard delay={150}>
+        <AnimatedCard delay={250} triggerKey={triggerKey}>
           <ComplianceCard />
         </AnimatedCard>
       </div>
 
       {/* Bottom Section */}
-      <div key={`bottom-${animationKey}`} className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
-        <AnimatedCard delay={250}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
+        <AnimatedCard delay={400} triggerKey={triggerKey}>
           <ComplianceTable />
         </AnimatedCard>
-        <AnimatedCard delay={350}>
+        <AnimatedCard delay={550} triggerKey={triggerKey}>
           <div className="space-y-2 sm:space-y-4">
             <div className="dashboard-card">
               <FilterSection />
