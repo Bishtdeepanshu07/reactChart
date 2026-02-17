@@ -45,6 +45,8 @@ const FilterSection = () => {
       }
     };
 
+    const selectAllLabel = allSelected ? 'Unselect All' : 'Select All';
+
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -57,7 +59,14 @@ const FilterSection = () => {
           <div className="space-y-2 p-4 max-h-60 overflow-y-auto">
             <div className="flex items-center space-x-2 pb-2 border-b">
               <Checkbox id={`${label}-select-all`} checked={allSelected} onCheckedChange={handleSelectAll} />
-              <label htmlFor={`${label}-select-all`} className="text-sm cursor-pointer font-medium">Select All</label>
+              <label
+                htmlFor={`${label}-select-all`}
+                className="text-sm cursor-pointer font-medium inline-block transition-all duration-300 ease-in-out"
+                key={selectAllLabel}
+                style={{ animation: 'fadeSlide 0.3s ease-in-out' }}
+              >
+                {selectAllLabel}
+              </label>
             </div>
             {options.map(option => (
               <div key={option} className="flex items-center space-x-2">
