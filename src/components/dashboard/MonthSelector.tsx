@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Check } from 'lucide-react';
 import { useExcelData } from '@/contexts/ExcelContext';
 
 const MonthSelector = () => {
   const { data, selectedMonths, setSelectedMonths } = useExcelData();
+  const prevDataLen = useRef(0);
 
   // Extract unique months from the data
   const months = useMemo(() => {
@@ -17,12 +18,13 @@ const MonthSelector = () => {
   // Derive selectAll state from actual selection
   const selectAll = months.length > 0 && selectedMonths.length === months.length;
 
-  // Auto-select all months when data is loaded
+  // Auto-select all months only when new data is loaded
   useEffect(() => {
-    if (months.length > 0 && selectedMonths.length === 0) {
+    if (months.length > 0 && data.length !== prevDataLen.current) {
+      prevDataLen.current = data.length;
       setSelectedMonths(months.map(m => m.id));
     }
-  }, [months, selectedMonths.length, setSelectedMonths]);
+  }, [months, data.length, setSelectedMonths]);
 
   const toggleMonth = (monthId: string) => {
     setSelectedMonths((prev) =>
