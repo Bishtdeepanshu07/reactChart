@@ -59,7 +59,13 @@ const MonthSelector = () => {
         }`}>
           {selectAll && <Check className="w-2 h-2 sm:w-3 sm:h-3 text-primary-foreground" />}
         </div>
-        <span className="hidden sm:inline">Select all</span>
+        <span
+          className="hidden sm:inline"
+          key={selectAll ? 'unselect' : 'select'}
+          style={{ animation: 'fadeSlide 0.3s ease-in-out' }}
+        >
+          {selectAll ? 'Unselect all' : 'Select all'}
+        </span>
       </button>
       
       {months.map((month) => (

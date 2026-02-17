@@ -13,8 +13,8 @@ const HorizontalBarChart = () => {
   const { data, selectedMonths, selectedActs, selectedActivities, selectedLocations } = useExcelData();
 
   const filteredData = useMemo(() => {
-    let filtered = data;
-    if (selectedMonths.length > 0) filtered = filtered.filter(row => selectedMonths.includes(row.Month));
+    if (data.length === 0 || selectedMonths.length === 0) return [];
+    let filtered = data.filter(row => selectedMonths.includes(row.Month));
     if (selectedActs.length > 0) filtered = filtered.filter(row => selectedActs.includes(row.ActName));
     if (selectedActivities.length > 0) filtered = filtered.filter(row => selectedActivities.includes(row.ActivitiesName));
     if (selectedLocations.length > 0) filtered = filtered.filter(row => selectedLocations.includes(row.Location));
