@@ -22,7 +22,8 @@ const ComplianceCard = () => {
   const [activePopup, setActivePopup] = useState<PopupType>(null);
 
   const filteredData = useMemo(() => {
-    if (selectedMonths.length === 0) return data;
+    if (data.length === 0) return [];
+    if (selectedMonths.length === 0) return [];
     return data.filter(row => selectedMonths.includes(row.Month));
   }, [data, selectedMonths]);
 
