@@ -27,7 +27,7 @@ const DataPopup = ({ open, onOpenChange, title, columns, data }: DataPopupProps)
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[80vh]">
         <DialogHeader>
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-4 pr-8">
             <DialogTitle>{title} ({data.length} records)</DialogTitle>
             {data.length > 0 && (
               <Button variant="outline" size="sm" onClick={handleExport} className="shrink-0">
