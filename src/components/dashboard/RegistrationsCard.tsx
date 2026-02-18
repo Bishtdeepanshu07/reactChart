@@ -18,35 +18,31 @@ const REGISTRATION_COLUMNS = [
 type PopupType = 'freshRequired' | 'active' | 'pending' | null;
 
 const RegistrationsCard = () => {
-  const { registrationData, selectedMonths, data } = useExcelData();
+  const { registrationData } = useExcelData();
   const [activePopup, setActivePopup] = useState<PopupType>(null);
 
-  // When months are unselected (and data exists), show zero
-  const hasMonthFilter = data.length > 0 && selectedMonths.length === 0;
-  const effectiveData = hasMonthFilter ? [] : registrationData;
-
   const stats = useMemo(() => {
-    if (effectiveData.length === 0) {
+    if (registrationData.length === 0) {
       return { freshRequired: 0, active: 0, pending: 0, total: 0 };
     }
-    const freshRequired = effectiveData.reduce((sum, row) => sum + row.FreshRequired, 0);
-    const active = effectiveData.filter(row => row.Status === 'Active').length;
-    const pending = effectiveData.filter(row =>
+    const freshRequired = registrationData.reduce((sum, row) => sum + row.FreshRequired, 0);
+    const active = registrationData.filter(row => row.Status === 'Active').length;
+    const pending = registrationData.filter(row =>
       row.RenewalStatus === 'Pending' || row.AmendmentStatus === 'Pending'
     ).length;
-    const total = effectiveData.length;
+    const total = registrationData.length;
     return { freshRequired, active, pending, total };
-  }, [effectiveData]);
+  }, [registrationData]);
 
   const popupData = useMemo(() => {
     if (!activePopup) return [];
-    return effectiveData.filter(row => {
+    return registrationData.filter(row => {
       if (activePopup === 'freshRequired') return row.FreshRequired > 0;
       if (activePopup === 'active') return row.Status === 'Active';
       if (activePopup === 'pending') return row.RenewalStatus === 'Pending' || row.AmendmentStatus === 'Pending';
       return false;
     });
-  }, [effectiveData, activePopup]);
+  }, [registrationData, activePopup]);
 
   const popupTitle = activePopup === 'freshRequired' ? 'Fresh Required' : activePopup === 'active' ? 'Active' : 'Pending';
   const maxValue = Math.max(stats.freshRequired, stats.active, stats.pending, stats.total) || 10;
