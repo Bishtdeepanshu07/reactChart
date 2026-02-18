@@ -15,6 +15,19 @@ const COMPLIANCE_COLUMNS = [
   { key: 'CompanyName', label: 'Company' },
 ];
 
+const PENDING_COMPLIANCE_COLUMNS = [
+  { key: 'ActName', label: 'Act Name' },
+  { key: 'ActivitiesName', label: 'Activity' },
+  { key: 'Month', label: 'Month' },
+  { key: 'Location', label: 'Location' },
+  { key: 'State', label: 'State' },
+  { key: 'TaskCycle', label: 'Task Cycle' },
+  { key: 'DueDate', label: 'Due Date' },
+  { key: 'ComplianceStatus', label: 'Status' },
+  { key: 'Comment', label: 'Reason' },
+  { key: 'CompanyName', label: 'Company' },
+];
+
 type PopupType = 'notDue' | 'pending' | 'completed' | null;
 
 const ComplianceCard = () => {
@@ -65,7 +78,7 @@ const ComplianceCard = () => {
         open={activePopup !== null}
         onOpenChange={(open) => !open && setActivePopup(null)}
         title={`Compliance - ${popupTitle}`}
-        columns={COMPLIANCE_COLUMNS}
+        columns={activePopup === 'pending' ? PENDING_COMPLIANCE_COLUMNS : COMPLIANCE_COLUMNS}
         data={popupData}
       />
     </div>
