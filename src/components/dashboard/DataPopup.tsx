@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -37,11 +37,11 @@ const DataPopup = ({ open, onOpenChange, title, columns, data }: DataPopupProps)
             )}
           </div>
         </DialogHeader>
-        <ScrollArea className="h-[60vh]">
-          {data.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">No records found.</p>
-          ) : (
-            <div className="overflow-x-auto">
+        {data.length === 0 ? (
+          <p className="text-muted-foreground text-center py-8">No records found.</p>
+        ) : (
+          <ScrollArea className="h-[60vh]">
+            <div className="min-w-max">
               <table className="data-table w-full text-sm">
                 <thead className="sticky top-0 z-10 bg-card">
                   <tr>
@@ -54,15 +54,16 @@ const DataPopup = ({ open, onOpenChange, title, columns, data }: DataPopupProps)
                   {data.map((row, i) => (
                     <tr key={i}>
                       {columns.map(col => (
-                        <td key={col.key}>{row[col.key] ?? '-'}</td>
+                        <td key={col.key} className="whitespace-nowrap">{row[col.key] ?? '-'}</td>
                       ))}
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          )}
-        </ScrollArea>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        )}
       </DialogContent>
     </Dialog>
   );
