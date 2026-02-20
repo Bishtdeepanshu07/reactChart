@@ -141,6 +141,11 @@ const HorizontalBarChart = () => {
                   fill="white" 
                   fontSize={11}
                   formatter={(value: number) => value > 0 ? value : ''}
+                  style={{ cursor: 'pointer', pointerEvents: 'all' }}
+                  onClick={(e: any) => {
+                    const idx = e?.index ?? e?.payload?.index;
+                    if (idx != null && chartData[idx]) handleBarClick('completed')(chartData[idx], idx);
+                  }}
                 />
               </Bar>
               <Bar dataKey="notDue" stackId="a" fill={COLORS.notDue} radius={[0, 0, 0, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={300} onClick={handleBarClick('notDue')} className="cursor-pointer">
@@ -150,6 +155,11 @@ const HorizontalBarChart = () => {
                   fill="white" 
                   fontSize={9}
                   formatter={(value: number) => value > 0 ? value : ''}
+                  style={{ cursor: 'pointer', pointerEvents: 'all' }}
+                  onClick={(e: any) => {
+                    const idx = e?.index ?? e?.payload?.index;
+                    if (idx != null && chartData[idx]) handleBarClick('notDue')(chartData[idx], idx);
+                  }}
                 />
               </Bar>
               <Bar dataKey="pending" stackId="a" fill={COLORS.pending} radius={[0, 4, 4, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={600} onClick={handleBarClick('pending')} className="cursor-pointer">
@@ -159,6 +169,11 @@ const HorizontalBarChart = () => {
                   fill="white" 
                   fontSize={9}
                   formatter={(value: number) => value > 0 ? value : ''}
+                  style={{ cursor: 'pointer', pointerEvents: 'all' }}
+                  onClick={(e: any) => {
+                    const idx = e?.index ?? e?.payload?.index;
+                    if (idx != null && chartData[idx]) handleBarClick('pending')(chartData[idx], idx);
+                  }}
                 />
               </Bar>
             </BarChart>
