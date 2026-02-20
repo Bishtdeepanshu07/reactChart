@@ -80,12 +80,13 @@ const HorizontalBarChart = () => {
   }, [filteredData]);
 
   const handleBarClick = useCallback((dataKey: 'completed' | 'notDue' | 'pending') => {
-    return (entry: any) => {
-      if (!entry?.name) return;
-      const fullName = nameMap[entry.name] || entry.name;
+    return (entry: any, index: number) => {
+      const name = entry?.name || entry?.payload?.name || (chartData[index] && chartData[index].name);
+      if (!name) return;
+      const fullName = nameMap[name] || name;
       setPopupInfo({ actName: fullName, status: dataKey });
     };
-  }, [nameMap]);
+  }, [nameMap, chartData]);
 
   const popupData = useMemo(() => {
     if (!popupInfo) return [];
