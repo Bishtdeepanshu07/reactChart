@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, LabelList } from 'recharts';
 import { useExcelData } from '@/contexts/ExcelContext';
 import { FileSpreadsheet } from 'lucide-react';
+import DataPopup from './DataPopup';
 
 const COLORS = {
   completed: 'hsl(174 72% 56%)',
@@ -9,8 +10,36 @@ const COLORS = {
   pending: 'hsl(45 93% 58%)',
 };
 
+const COMPLIANCE_COLUMNS = [
+  { key: 'ActName', label: 'Act Name' },
+  { key: 'ActivitiesName', label: 'Activity' },
+  { key: 'Month', label: 'Month' },
+  { key: 'Location', label: 'Location' },
+  { key: 'State', label: 'State' },
+  { key: 'TaskCycle', label: 'Task Cycle' },
+  { key: 'DueDate', label: 'Due Date' },
+  { key: 'ComplianceStatus', label: 'Status' },
+  { key: 'CompanyName', label: 'Company' },
+];
+
+const PENDING_COLUMNS = [
+  { key: 'ActName', label: 'Act Name' },
+  { key: 'ActivitiesName', label: 'Activity' },
+  { key: 'Month', label: 'Month' },
+  { key: 'Location', label: 'Location' },
+  { key: 'State', label: 'State' },
+  { key: 'TaskCycle', label: 'Task Cycle' },
+  { key: 'DueDate', label: 'Due Date' },
+  { key: 'ComplianceStatus', label: 'Status' },
+  { key: 'Comment', label: 'Reason' },
+  { key: 'CompanyName', label: 'Company' },
+];
+
+type PopupInfo = { actName: string; status: 'completed' | 'notDue' | 'pending' } | null;
+
 const HorizontalBarChart = () => {
   const { data, selectedMonths, selectedActs, selectedActivities, selectedLocations } = useExcelData();
+  const [popupInfo, setPopupInfo] = useState<PopupInfo>(null);
 
   const filteredData = useMemo(() => {
     if (data.length === 0 || selectedMonths.length === 0) return [];
@@ -21,10 +50,10 @@ const HorizontalBarChart = () => {
     return filtered;
   }, [data, selectedMonths, selectedActs, selectedActivities, selectedLocations]);
 
-  const chartData = useMemo(() => {
-    if (filteredData.length === 0) return [];
+  // Keep a map of truncated name -> full name for popup lookup
+  const { chartData, nameMap } = useMemo(() => {
+    if (filteredData.length === 0) return { chartData: [], nameMap: {} as Record<string, string> };
 
-    // Group by Act Name and aggregate counts
     const grouped = filteredData.reduce((acc, row) => {
       const actName = row.ActName || 'Unknown';
       if (!acc[actName]) {
@@ -36,15 +65,42 @@ const HorizontalBarChart = () => {
       return acc;
     }, {} as Record<string, { name: string; completed: number; notDue: number; pending: number }>);
 
-    // Convert to array and sort by total count
-    return Object.values(grouped)
+    const sorted = Object.values(grouped)
       .sort((a, b) => (b.completed + b.notDue + b.pending) - (a.completed + a.notDue + a.pending))
-      .slice(0, 8) // Show top 8 acts
-      .map(item => ({
-        ...item,
-        name: item.name.length > 15 ? item.name.substring(0, 12) + '...' : item.name,
-      }));
+      .slice(0, 8);
+
+    const map: Record<string, string> = {};
+    const data = sorted.map(item => {
+      const displayName = item.name.length > 15 ? item.name.substring(0, 12) + '...' : item.name;
+      map[displayName] = item.name;
+      return { ...item, name: displayName };
+    });
+
+    return { chartData: data, nameMap: map };
   }, [filteredData]);
+
+  const handleBarClick = useCallback((dataKey: 'completed' | 'notDue' | 'pending') => {
+    return (entry: any) => {
+      if (!entry?.name) return;
+      const fullName = nameMap[entry.name] || entry.name;
+      setPopupInfo({ actName: fullName, status: dataKey });
+    };
+  }, [nameMap]);
+
+  const popupData = useMemo(() => {
+    if (!popupInfo) return [];
+    return filteredData.filter(row => {
+      if (row.ActName !== popupInfo.actName) return false;
+      if (popupInfo.status === 'completed') return (row.Completed || 0) > 0;
+      if (popupInfo.status === 'notDue') return (row.NotDue || 0) > 0;
+      if (popupInfo.status === 'pending') return (row.Pending || 0) > 0;
+      return false;
+    });
+  }, [filteredData, popupInfo]);
+
+  const popupTitle = popupInfo
+    ? `${popupInfo.actName} - ${popupInfo.status === 'completed' ? 'Completed' : popupInfo.status === 'notDue' ? 'Not Due' : 'Pending'}`
+    : '';
 
   if (filteredData.length === 0) {
     return (
@@ -77,7 +133,7 @@ const HorizontalBarChart = () => {
                 tick={{ fill: 'hsl(215 20% 65%)', fontSize: 10 }}
                 width={60}
               />
-              <Bar dataKey="completed" stackId="a" fill={COLORS.completed} radius={[0, 0, 0, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={0}>
+              <Bar dataKey="completed" stackId="a" fill={COLORS.completed} radius={[0, 0, 0, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={0} onClick={handleBarClick('completed')} className="cursor-pointer">
                 <LabelList 
                   dataKey="completed" 
                   position="center" 
@@ -86,7 +142,7 @@ const HorizontalBarChart = () => {
                   formatter={(value: number) => value > 0 ? value : ''}
                 />
               </Bar>
-              <Bar dataKey="notDue" stackId="a" fill={COLORS.notDue} radius={[0, 0, 0, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={300}>
+              <Bar dataKey="notDue" stackId="a" fill={COLORS.notDue} radius={[0, 0, 0, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={300} onClick={handleBarClick('notDue')} className="cursor-pointer">
                 <LabelList 
                   dataKey="notDue" 
                   position="center" 
@@ -95,7 +151,7 @@ const HorizontalBarChart = () => {
                   formatter={(value: number) => value > 0 ? value : ''}
                 />
               </Bar>
-              <Bar dataKey="pending" stackId="a" fill={COLORS.pending} radius={[0, 4, 4, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={600}>
+              <Bar dataKey="pending" stackId="a" fill={COLORS.pending} radius={[0, 4, 4, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={600} onClick={handleBarClick('pending')} className="cursor-pointer">
                 <LabelList 
                   dataKey="pending" 
                   position="center" 
@@ -123,6 +179,13 @@ const HorizontalBarChart = () => {
           </div>
         </div>
       </div>
+      <DataPopup
+        open={popupInfo !== null}
+        onOpenChange={(open) => !open && setPopupInfo(null)}
+        title={popupTitle}
+        columns={popupInfo?.status === 'pending' ? PENDING_COLUMNS : COMPLIANCE_COLUMNS}
+        data={popupData}
+      />
     </div>
   );
 };
