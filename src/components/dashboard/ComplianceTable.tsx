@@ -6,8 +6,11 @@ const ComplianceTable = () => {
   const { data, isLoading, selectedMonths } = useExcelData();
 
   const filteredData = useMemo(() => {
-    if (selectedMonths.length === 0) return data;
-    return data.filter(row => selectedMonths.includes(row.Month));
+    let filtered = data;
+    if (selectedMonths.length > 0) {
+      filtered = filtered.filter(row => selectedMonths.includes(row.Month));
+    }
+    return filtered.filter(row => (row.Pending || 0) > 0);
   }, [data, selectedMonths]);
 
   if (isLoading) {
@@ -22,8 +25,8 @@ const ComplianceTable = () => {
     return (
       <div className="dashboard-card h-full flex flex-col items-center justify-center min-h-[400px] gap-3">
         <FileSpreadsheet className="w-12 h-12 text-muted-foreground" />
-        <p className="text-muted-foreground text-center">
-          {data.length === 0 ? 'No data loaded. Upload an Excel file to view compliance data.' : 'No data for selected months.'}
+          <p className="text-muted-foreground text-center">
+          {data.length === 0 ? 'No data loaded. Upload an Excel file to view compliance data.' : 'No pending compliance data found.'}
         </p>
       </div>
     );
@@ -42,8 +45,8 @@ const ComplianceTable = () => {
               <th>State</th>
               <th>Task Cycle</th>
               <th>Due Date</th>
-              <th>Date Completed</th>
-              <th>Compliance Score</th>
+              <th>Status</th>
+              <th>Reason</th>
               <th>Company Name</th>
             </tr>
           </thead>
@@ -65,8 +68,8 @@ const ComplianceTable = () => {
                   </span>
                 </td>
                 <td className="text-muted-foreground">{row.DueDate}</td>
-                <td>{row.DateOfTaskCompletion || '-'}</td>
-                <td>{row.ComplianceScore || '-'}</td>
+                <td>{row.ComplianceStatus || 'Pending'}</td>
+                <td>{row.Comment || '-'}</td>
                 <td>{row.CompanyName}</td>
               </tr>
             ))}
