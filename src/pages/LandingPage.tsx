@@ -10,7 +10,9 @@ const LandingPage = () => {
         <div className="flex items-center gap-3">
           <img src={adventLogo} alt="Advent Management & Consulting Services" className="h-14 w-14 object-contain" />
           <span className="text-[10px] text-[#333] font-medium leading-tight hidden sm:block">
-            <br />& CONSULTING SERVICES
+            ADVENT MANAGEMENT
+            <br />
+            &amp; CONSULTING SERVICES
           </span>
         </div>
         <div className="flex items-center gap-3">
