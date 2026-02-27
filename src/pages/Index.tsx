@@ -1,4 +1,4 @@
-import NavigationTabs from '@/components/dashboard/NavigationTabs';
+import NavigationTabs, { ConnectButton } from '@/components/dashboard/NavigationTabs';
 import MonthSelector from '@/components/dashboard/MonthSelector';
 import RegistrationsCard from '@/components/dashboard/RegistrationsCard';
 import ComplianceCard from '@/components/dashboard/ComplianceCard';
@@ -23,7 +23,10 @@ const DashboardContent = () => {
     <div className="min-h-screen bg-background p-2 sm:p-4 md:p-6">
       {/* Header */}
       <header className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
-        <NavigationTabs />
+        <div className="flex flex-wrap items-center gap-2">
+          <NavigationTabs />
+          <ConnectButton />
+        </div>
         <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
           <ExcelUploader />
           <MonthSelector />
