@@ -1,35 +1,38 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import adventLogo from '@/assets/advent-logo.png';
 import { Phone, Mail } from 'lucide-react';
+import AuthDialog from '@/components/AuthDialog';
 
 const LandingPage = () => {
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authTab, setAuthTab] = useState<'login' | 'signup'>('login');
+
+  const openLogin = () => { setAuthTab('login'); setAuthOpen(true); };
+  const openSignup = () => { setAuthTab('signup'); setAuthOpen(true); };
+
   return (
-    <div className="min-h-screen bg-[#f0f0f0] flex flex-col overflow-hidden">
-      {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-4">
-        <div className="flex items-center gap-3">
-          <img src={adventLogo} alt="Advent Management & Consulting Services" className="h-14 w-14 object-contain" />
-          
-
-
-
-
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            to="/dashboard"
-            className="px-6 py-2 rounded border border-[#5b6abf] text-[#5b6abf] text-sm font-medium hover:bg-[#5b6abf] hover:text-white transition-colors">
-
-            Log in
-          </Link>
-          <Link
-            to="/dashboard"
-            className="px-6 py-2 rounded border border-[#5b6abf] text-[#5b6abf] text-sm font-medium hover:bg-[#5b6abf] hover:text-white transition-colors">
-
-            Register
-          </Link>
-        </div>
-      </header>
+    <>
+      <AuthDialog open={authOpen} onOpenChange={setAuthOpen} defaultTab={authTab} />
+      <div className="min-h-screen bg-[#f0f0f0] flex flex-col overflow-hidden">
+        {/* Header */}
+        <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-4">
+          <div className="flex items-center gap-3">
+            <img src={adventLogo} alt="Advent Management & Consulting Services" className="h-14 w-14 object-contain" />
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={openLogin}
+              className="px-6 py-2 rounded border border-[#5b6abf] text-[#5b6abf] text-sm font-medium hover:bg-[#5b6abf] hover:text-white transition-colors">
+              Log in
+            </button>
+            <button
+              onClick={openSignup}
+              className="px-6 py-2 rounded border border-[#5b6abf] text-[#5b6abf] text-sm font-medium hover:bg-[#5b6abf] hover:text-white transition-colors">
+              Register
+            </button>
+          </div>
+        </header>
 
       {/* Hero Section */}
       <main className="relative flex-1 flex flex-col items-center justify-center py-20 md:py-[240px]">
@@ -101,8 +104,9 @@ const LandingPage = () => {
           Copyrights @2025 Advent. All Rights Reserved
         </div>
       </footer>
-    </div>);
-
+      </div>
+    </>
+  );
 };
 
 export default LandingPage;
