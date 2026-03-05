@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 interface DataPopupProps {
   open: boolean;
@@ -13,14 +13,35 @@ interface DataPopupProps {
 }
 
 const DataPopup = ({ open, onOpenChange, title, columns, data }: DataPopupProps) => {
-  const handleExport = () => {
-    const exportData = data.map(row =>
-      Object.fromEntries(columns.map(col => [col.label, row[col.key] ?? '']))
-    );
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Data');
-    XLSX.writeFile(wb, `${title.replace(/[^a-zA-Z0-9]/g, '_')}.xlsx`);
+  const handleExport = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Data');
+
+    // Add header row
+    worksheet.columns = columns.map(col => ({
+      header: col.label,
+      key: col.key,
+      width: 20,
+    }));
+
+    // Add data rows
+    data.forEach(row => {
+      const rowData: Record<string, any> = {};
+      columns.forEach(col => {
+        rowData[col.key] = row[col.key] ?? '';
+      });
+      worksheet.addRow(rowData);
+    });
+
+    // Generate and download
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title.replace(/[^a-zA-Z0-9]/g, '_')}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
