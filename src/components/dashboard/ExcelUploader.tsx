@@ -3,13 +3,17 @@ import { Upload, FileSpreadsheet, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useExcelData } from '@/contexts/ExcelContext';
 import { ComplianceRow, RegistrationRow } from '@/types/compliance';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { toast } from 'sonner';
 import { format, parse, isValid } from 'date-fns';
 
 // Parse Excel dates - handles serial numbers and various string formats
 const parseExcelDate = (value: any): string => {
   if (!value) return '';
+
+  if (value instanceof Date && isValid(value)) {
+    return format(value, 'dd/MM/yyyy');
+  }
 
   // Handle Excel serial dates (numbers between 1 and 100000 are likely dates)
   if (typeof value === 'number' && value > 1 && value < 100000) {
@@ -22,7 +26,6 @@ const parseExcelDate = (value: any): string => {
     const trimmed = value.trim();
     if (!trimmed) return '';
 
-    // Try multiple formats
     const formats = ['dd/MM/yyyy', 'MM/dd/yyyy', 'yyyy-MM-dd', 'dd-MM-yyyy', 'dd/MM/yy'];
     for (const fmt of formats) {
       const parsed = parse(trimmed, fmt, new Date());
@@ -30,12 +33,7 @@ const parseExcelDate = (value: any): string => {
         return format(parsed, 'dd/MM/yyyy');
       }
     }
-    // Return original if no format matched
     return trimmed;
-  }
-
-  if (value instanceof Date && isValid(value)) {
-    return format(value, 'dd/MM/yyyy');
   }
 
   return String(value);
@@ -45,18 +43,20 @@ const parseExcelDate = (value: any): string => {
 const parseExcelMonth = (value: any): string => {
   if (!value) return '';
 
-  // Handle Excel serial dates for month
+  if (value instanceof Date && isValid(value)) {
+    return format(value, 'MMM-yy');
+  }
+
   if (typeof value === 'number' && value > 1 && value < 100000) {
     const excelEpoch = new Date(1899, 11, 30);
     const date = new Date(excelEpoch.getTime() + value * 86400000);
-    return format(date, 'MMM-yy'); // Returns "Jan-25" format
+    return format(date, 'MMM-yy');
   }
 
   if (typeof value === 'string') {
     const trimmed = value.trim();
     if (!trimmed) return trimmed;
 
-    // Try parsing "MMM-yy" format (e.g., "Jan-25")
     const monthFormats = ['MMM-yy', 'MMM-yyyy', 'MMMM-yy', 'MMMM-yyyy'];
     for (const fmt of monthFormats) {
       const parsed = parse(trimmed, fmt, new Date());
@@ -67,112 +67,126 @@ const parseExcelMonth = (value: any): string => {
     return trimmed;
   }
 
-  if (value instanceof Date && isValid(value)) {
-    return format(value, 'MMM-yy');
-  }
-
   return String(value);
+};
+
+// Helper: convert exceljs worksheet to array of objects (like XLSX.utils.sheet_to_json)
+const sheetToJson = (worksheet: ExcelJS.Worksheet): Record<string, any>[] => {
+  const rows: Record<string, any>[] = [];
+  const headers: string[] = [];
+
+  worksheet.eachRow((row, rowNumber) => {
+    if (rowNumber === 1) {
+      row.eachCell((cell, colNumber) => {
+        headers[colNumber] = String(cell.value ?? '');
+      });
+    } else {
+      const obj: Record<string, any> = {};
+      row.eachCell((cell, colNumber) => {
+        const header = headers[colNumber];
+        if (header) {
+          obj[header] = cell.value;
+        }
+      });
+      if (Object.keys(obj).length > 0) {
+        rows.push(obj);
+      }
+    }
+  });
+
+  return rows;
 };
 
 const ExcelUploader = () => {
   const { setData, setRegistrationData, setIsLoading, fileName, setFileName, data } = useExcelData();
 
-  const parseExcel = useCallback((file: File) => {
+  const parseExcel = useCallback(async (file: File) => {
     setIsLoading(true);
-    const reader = new FileReader();
 
-    reader.onload = (e) => {
-      try {
-        const arrayBuffer = e.target?.result as ArrayBuffer;
-        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(arrayBuffer);
 
-        // Parse first sheet (Compliance data)
-        const sheet1Name = workbook.SheetNames[0];
-        const worksheet1 = workbook.Sheets[sheet1Name];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet1);
+      // Parse first sheet (Compliance data)
+      const worksheet1 = workbook.worksheets[0];
+      if (!worksheet1) throw new Error('No sheets found');
 
-        const mappedData: ComplianceRow[] = jsonData.map((row: any) => ({
-          Month: parseExcelMonth(row['Month']),
-          Qtr: row['Qtr'] || '',
-          Year: row['Year'] || '',
+      const jsonData = sheetToJson(worksheet1);
+
+      const mappedData: ComplianceRow[] = jsonData.map((row: any) => ({
+        Month: parseExcelMonth(row['Month']),
+        Qtr: row['Qtr'] || '',
+        Year: row['Year'] || '',
+        CompanyName: row['Company Name'] || '',
+        Location: row['Location'] || '',
+        ActName: row['Act Name'] || '',
+        Vertical: row['Vertical'] || '',
+        ActivitiesName: row['Activities Name'] || '',
+        ActivityCount: Number(row['Activity count']) || 0,
+        Zone: row['Zone'] || '',
+        State: row['State'] || '',
+        TaskCycle: row['Task Cycle'] || '',
+        DueDate: parseExcelDate(row['Due Date']),
+        DateOfTaskCompletion: parseExcelDate(row['Date of Task Completion']),
+        ComplianceScore: Number(row['Compliance Score']) || 0,
+        Completed: Number(row['Completed']) || 0,
+        Pending: Number(row['Pending']) || 0,
+        NotDue: Number(row['Not Due']) || 0,
+        ComplianceStatus: row['Compliance Status'] || '',
+        PendingCategory: row['Pending Category'] || '',
+        Risk: row['Risk'] || '',
+        Comment: row['Comment'] || '',
+        SpocPerson: row['Spoc Person'] || '',
+        SpocEmail: row['Spoc Email'] || '',
+        ClientSpocPerson: row['Client Spoc Person'] || '',
+        CertificateNumber: row['Certificate Number'] || '',
+        CertificateStatus: row['Certificate Status'] || '',
+        ValidityFrom: parseExcelDate(row['Validity From']),
+        ValidityTo: parseExcelDate(row['Validity To']),
+        DueIn: row['Due in'] || '',
+      }));
+
+      setData(mappedData);
+
+      // Parse second sheet (Registration data) if exists
+      if (workbook.worksheets.length >= 2) {
+        const worksheet2 = workbook.worksheets[1];
+        const jsonData2 = sheetToJson(worksheet2);
+
+        const mappedRegistrationData: RegistrationRow[] = jsonData2.map((row: any) => ({
           CompanyName: row['Company Name'] || '',
-          Location: row['Location'] || '',
-          ActName: row['Act Name'] || '',
-          Vertical: row['Vertical'] || '',
-          ActivitiesName: row['Activities Name'] || '',
-          ActivityCount: Number(row['Activity count']) || 0,
-          Zone: row['Zone'] || '',
           State: row['State'] || '',
-          TaskCycle: row['Task Cycle'] || '',
-          DueDate: parseExcelDate(row['Due Date']),
-          DateOfTaskCompletion: parseExcelDate(row['Date of Task Completion']),
-          ComplianceScore: Number(row['Compliance Score']) || 0,
+          City: row['City'] || '',
+          Address: row['Address'] || '',
+          EmployerName: row['Employer Name'] || '',
+          Type: row['Type'] || '',
+          HeadcountSalary: Number(row['Headcount as per Salary']) || 0,
+          HeadcountRC: Number(row['Headcount as per RC']) || 0,
+          RCNo: row['RC No.'] || '',
+          DateOfObtained: parseExcelDate(row['Date Of Obtained']),
+          Validity: row['Validity'] || '',
+          Status: row['Status'] || '',
           Completed: Number(row['Completed']) || 0,
-          Pending: Number(row['Pending']) || 0,
-          NotDue: Number(row['Not Due']) || 0,
-          ComplianceStatus: row['Compliance Status'] || '',
-          PendingCategory: row['Pending Category'] || '',
-          Risk: row['Risk'] || '',
-          Comment: row['Comment'] || '',
-          SpocPerson: row['Spoc Person'] || '',
-          SpocEmail: row['Spoc Email'] || '',
-          ClientSpocPerson: row['Client Spoc Person'] || '',
-          CertificateNumber: row['Certificate Number'] || '',
-          CertificateStatus: row['Certificate Status'] || '',
-          ValidityFrom: parseExcelDate(row['Validity From']),
-          ValidityTo: parseExcelDate(row['Validity To']),
-          DueIn: row['Due in'] || '',
+          FreshRequired: Number(row['Fresh Required']) || 0,
+          Exemption: Number(row['Exemption']) || 0,
+          Count: Number(row['Count']) || 0,
+          RenewalStatus: row['Renewal Status'] || '',
+          AmendmentStatus: row['Amendment status'] || '',
+          Days: row['days'] || '',
         }));
 
-        setData(mappedData);
-
-        // Parse second sheet (Registration data) if exists
-        if (workbook.SheetNames.length >= 2) {
-          const sheet2Name = workbook.SheetNames[1];
-          const worksheet2 = workbook.Sheets[sheet2Name];
-          const jsonData2 = XLSX.utils.sheet_to_json(worksheet2);
-
-          const mappedRegistrationData: RegistrationRow[] = jsonData2.map((row: any) => ({
-            CompanyName: row['Company Name'] || '',
-            State: row['State'] || '',
-            City: row['City'] || '',
-            Address: row['Address'] || '',
-            EmployerName: row['Employer Name'] || '',
-            Type: row['Type'] || '',
-            HeadcountSalary: Number(row['Headcount as per Salary']) || 0,
-            HeadcountRC: Number(row['Headcount as per RC']) || 0,
-            RCNo: row['RC No.'] || '',
-            DateOfObtained: parseExcelDate(row['Date Of Obtained']),
-            Validity: row['Validity'] || '',
-            Status: row['Status'] || '',
-            Completed: Number(row['Completed']) || 0,
-            FreshRequired: Number(row['Fresh Required']) || 0,
-            Exemption: Number(row['Exemption']) || 0,
-            Count: Number(row['Count']) || 0,
-            RenewalStatus: row['Renewal Status'] || '',
-            AmendmentStatus: row['Amendment status'] || '',
-            Days: row['days'] || '',
-          }));
-
-          setRegistrationData(mappedRegistrationData);
-        }
-
-        setFileName(file.name);
-        toast.success(`Loaded ${mappedData.length} records from ${file.name}`);
-      } catch (error) {
-        console.error('Error parsing Excel file:', error);
-        toast.error('Failed to parse Excel file. Please check the format.');
-      } finally {
-        setIsLoading(false);
+        setRegistrationData(mappedRegistrationData);
       }
-    };
 
-    reader.onerror = () => {
+      setFileName(file.name);
+      toast.success(`Loaded ${mappedData.length} records from ${file.name}`);
+    } catch (error) {
+      console.error('Error parsing Excel file:', error);
+      toast.error('Failed to parse Excel file. Please check the format.');
+    } finally {
       setIsLoading(false);
-      toast.error('Failed to read file');
-    };
-
-    reader.readAsArrayBuffer(file);
+    }
   }, [setData, setRegistrationData, setFileName, setIsLoading]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
