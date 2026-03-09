@@ -11,9 +11,11 @@ import AnimatedCard from '@/components/dashboard/AnimatedCard';
 import { CardSkeleton, TableSkeleton, FilterSkeleton } from '@/components/dashboard/DashboardSkeleton';
 import { ExcelProvider, useExcelData } from '@/contexts/ExcelContext';
 import { useRef } from 'react';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 const DashboardContent = () => {
   const { data, registrationData, isLoading } = useExcelData();
+  const { isAdmin } = useIsAdmin();
   const hasData = data.length > 0 || registrationData.length > 0;
   const loadCount = useRef(0);
   if (hasData) loadCount.current += 1;
@@ -25,10 +27,10 @@ const DashboardContent = () => {
       <header className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
         <div className="flex flex-wrap items-center gap-2">
           <NavigationTabs />
-          <ConnectButton />
+          {isAdmin && <ConnectButton />}
         </div>
         <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
-          <ExcelUploader />
+          {isAdmin && <ExcelUploader />}
           <MonthSelector />
           <ThemeToggle />
         </div>
