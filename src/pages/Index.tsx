@@ -11,6 +11,7 @@ import AnimatedCard from '@/components/dashboard/AnimatedCard';
 import { CardSkeleton, TableSkeleton, FilterSkeleton } from '@/components/dashboard/DashboardSkeleton';
 import { ExcelProvider, useExcelData } from '@/contexts/ExcelContext';
 import { useRef } from 'react';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 const DashboardContent = () => {
   const { data, registrationData, isLoading } = useExcelData();
