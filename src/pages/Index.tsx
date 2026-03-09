@@ -15,6 +15,7 @@ import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 const DashboardContent = () => {
   const { data, registrationData, isLoading } = useExcelData();
+  const { isAdmin } = useIsAdmin();
   const hasData = data.length > 0 || registrationData.length > 0;
   const loadCount = useRef(0);
   if (hasData) loadCount.current += 1;
