@@ -70,4 +70,6 @@ export interface ExcelContextType {
   setSelectedActivities: React.Dispatch<React.SetStateAction<string[]>>;
   selectedLocations: string[];
   setSelectedLocations: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedCompany: string;
+  setSelectedCompany: React.Dispatch<React.SetStateAction<string>>;
 }

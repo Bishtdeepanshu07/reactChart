@@ -10,8 +10,38 @@ import ThemeToggle from '@/components/dashboard/ThemeToggle';
 import AnimatedCard from '@/components/dashboard/AnimatedCard';
 import { CardSkeleton, TableSkeleton, FilterSkeleton } from '@/components/dashboard/DashboardSkeleton';
 import { ExcelProvider, useExcelData } from '@/contexts/ExcelContext';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Input } from '@/components/ui/input';
+import { Building2, X } from 'lucide-react';
+
+const CompanyFilter = () => {
+  const { selectedCompany, setSelectedCompany } = useExcelData();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${selectedCompany ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}>
+          <Building2 className="h-3.5 w-3.5" />
+          {selectedCompany || 'Filter Company'}
+          {selectedCompany && (
+            <X className="h-3 w-3 ml-1 cursor-pointer" onClick={(e) => { e.stopPropagation(); setSelectedCompany(''); }} />
+          )}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-64 p-3">
+        <Input
+          placeholder="Type company name..."
+          value={selectedCompany}
+          onChange={(e) => setSelectedCompany(e.target.value)}
+          autoFocus
+        />
+      </PopoverContent>
+    </Popover>
+  );
+};
 
 const DashboardContent = () => {
   const { data, registrationData, isLoading } = useExcelData();
