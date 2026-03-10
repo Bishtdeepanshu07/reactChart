@@ -25,12 +25,19 @@ const AuthDialog = ({ open, onOpenChange, defaultTab = 'login' }: AuthDialogProp
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,30}$/;
+
   const fakeEmail = (uname: string) => `${uname.toLowerCase().trim()}@dashboard.local`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim() || !password) {
       toast({ title: 'Error', description: 'Please fill in all fields.', variant: 'destructive' });
+      return;
+    }
+
+    if (!USERNAME_REGEX.test(username.trim())) {
+      toast({ title: 'Error', description: 'Username must be 3-30 characters and contain only letters, numbers, and underscores.', variant: 'destructive' });
       return;
     }
 
