@@ -1,1 +1,0 @@
-DROP POLICY IF EXISTS "Anyone can check username existence" ON public.profiles;

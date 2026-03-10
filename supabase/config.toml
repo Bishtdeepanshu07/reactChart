@@ -1,7 +1,1 @@
 project_id = "mzsevavjimcgfxdptvcy"
-
-[functions.check-username]
-verify_jwt = false
-
-[functions.get-nav-links]
-verify_jwt = false

@@ -1,1 +1,0 @@
-ALTER TABLE public.profiles ADD CONSTRAINT username_format CHECK (length(username) BETWEEN 3 AND 30 AND username ~ '^[a-zA-Z0-9_]+$');

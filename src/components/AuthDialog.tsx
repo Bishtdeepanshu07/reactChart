@@ -25,19 +25,12 @@ const AuthDialog = ({ open, onOpenChange, defaultTab = 'login' }: AuthDialogProp
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,30}$/;
-
   const fakeEmail = (uname: string) => `${uname.toLowerCase().trim()}@dashboard.local`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim() || !password) {
       toast({ title: 'Error', description: 'Please fill in all fields.', variant: 'destructive' });
-      return;
-    }
-
-    if (!USERNAME_REGEX.test(username.trim())) {
-      toast({ title: 'Error', description: 'Username must be 3-30 characters and contain only letters, numbers, and underscores.', variant: 'destructive' });
       return;
     }
 
@@ -55,14 +48,14 @@ const AuthDialog = ({ open, onOpenChange, defaultTab = 'login' }: AuthDialogProp
 
     try {
       if (activeTab === 'signup') {
-        // Check if username already exists via edge function
-        const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-username', {
-          body: { username: username.trim() },
-        });
+        // Check if username already exists
+        const { data: existing } = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('username', username.trim())
+          .maybeSingle();
 
-        if (checkError) throw checkError;
-
-        if (checkResult?.exists) {
+        if (existing) {
           toast({ title: 'Error', description: 'Username already taken.', variant: 'destructive' });
           setIsSubmitting(false);
           return;
