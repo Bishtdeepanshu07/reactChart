@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { supabase } from '@/integrations/supabase/client';
 
-const tabs = [
+interface NavTab {
+  id: string;
+  label: string;
+  link?: string;
+}
+
+const staticTabs: NavTab[] = [
   { id: 'repository', label: 'Repository' },
-  { id: 'regns', label: 'REGNs/Licenses Details', link: 'https://adventmanagementconsulting-my.sharepoint.com/personal/shahabuddin_adventmcs_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fshahabuddin%5Fadventmcs%5Fcom%2FDocuments%2FCompany%20Data%20Share%20Point%2FWhale%20Cloud%2FS%26CE&ga=1' },
-  { id: 'returns', label: 'Returns', link: 'https://adventmanagementconsulting-my.sharepoint.com/personal/shahabuddin_adventmcs_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fshahabuddin%5Fadventmcs%5Fcom%2FDocuments%2FCompany%20Data%20Share%20Point%2FWhale%20Cloud%2F2024%2FReturn%5F2024&ga=1&startedResponseCatch=true' },
-  { id: 'registers', label: 'Registers and Records', link: 'https://adventmanagementconsulting-my.sharepoint.com/personal/shahabuddin_adventmcs_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fshahabuddin%5Fadventmcs%5Fcom%2FDocuments%2FCompany%20Data%20Share%20Point%2FWhale%20Cloud%2F2025%2FRegisters&ga=1' },
 ];
 
 export const ConnectButton = () => {
@@ -16,7 +20,7 @@ export const ConnectButton = () => {
   return (
     <Dialog open={connectOpen} onOpenChange={setConnectOpen}>
       <DialogTrigger asChild>
-        <button className="px-3 py-1.5 rounded-md bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors">
+        <button className="px-3 py-1.5 rounded-md bg-background text-foreground text-sm font-medium hover:bg-muted transition-colors">
           Connect +
         </button>
       </DialogTrigger>
@@ -41,8 +45,30 @@ export const ConnectButton = () => {
 
 const NavigationTabs = () => {
   const [activeTab, setActiveTab] = useState('repository');
+  const [tabs, setTabs] = useState<NavTab[]>(staticTabs);
 
-  const handleTabClick = (tab: typeof tabs[0]) => {
+  useEffect(() => {
+    const fetchLinks = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('get-nav-links');
+        if (error || !data?.links) return;
+
+        const dynamicTabs: NavTab[] = Object.entries(data.links).map(([id, val]: [string, any]) => ({
+          id,
+          label: val.label,
+          link: val.link,
+        }));
+
+        setTabs([...staticTabs, ...dynamicTabs]);
+      } catch {
+        // Fallback to static tabs only
+      }
+    };
+
+    fetchLinks();
+  }, []);
+
+  const handleTabClick = (tab: NavTab) => {
     if (tab.link) {
       window.open(tab.link, '_blank');
     } else {
