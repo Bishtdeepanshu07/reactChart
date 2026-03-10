@@ -48,14 +48,14 @@ const AuthDialog = ({ open, onOpenChange, defaultTab = 'login' }: AuthDialogProp
 
     try {
       if (activeTab === 'signup') {
-        // Check if username already exists
-        const { data: existing } = await supabase
-          .from('profiles')
-          .select('username')
-          .eq('username', username.trim())
-          .maybeSingle();
+        // Check if username already exists via edge function
+        const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-username', {
+          body: { username: username.trim() },
+        });
 
-        if (existing) {
+        if (checkError) throw checkError;
+
+        if (checkResult?.exists) {
           toast({ title: 'Error', description: 'Username already taken.', variant: 'destructive' });
           setIsSubmitting(false);
           return;
