@@ -26,6 +26,13 @@ export const ExcelProvider = ({ children }: { children: ReactNode }) => {
     return rawRegistrationData.filter(row => row.CompanyName?.toLowerCase().includes(search));
   }, [rawRegistrationData, selectedCompany]);
 
+  const companyNames = useMemo(() => {
+    const names = new Set<string>();
+    rawData.forEach(row => { if (row.CompanyName) names.add(row.CompanyName); });
+    rawRegistrationData.forEach(row => { if (row.CompanyName) names.add(row.CompanyName); });
+    return Array.from(names).sort();
+  }, [rawData, rawRegistrationData]);
+
   return (
     <ExcelContext.Provider value={{ data, setData: setRawData, registrationData, setRegistrationData: setRawRegistrationData, isLoading, setIsLoading, fileName, setFileName, selectedMonths, setSelectedMonths, selectedActs, setSelectedActs, selectedActivities, setSelectedActivities, selectedLocations, setSelectedLocations, selectedCompany, setSelectedCompany }}>
       {children}
