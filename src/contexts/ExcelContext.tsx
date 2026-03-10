@@ -34,7 +34,7 @@ export const ExcelProvider = ({ children }: { children: ReactNode }) => {
   }, [rawData, rawRegistrationData]);
 
   return (
-    <ExcelContext.Provider value={{ data, setData: setRawData, registrationData, setRegistrationData: setRawRegistrationData, isLoading, setIsLoading, fileName, setFileName, selectedMonths, setSelectedMonths, selectedActs, setSelectedActs, selectedActivities, setSelectedActivities, selectedLocations, setSelectedLocations, selectedCompany, setSelectedCompany }}>
+    <ExcelContext.Provider value={{ data, setData: setRawData, registrationData, setRegistrationData: setRawRegistrationData, isLoading, setIsLoading, fileName, setFileName, selectedMonths, setSelectedMonths, selectedActs, setSelectedActs, selectedActivities, setSelectedActivities, selectedLocations, setSelectedLocations, selectedCompany, setSelectedCompany, companyNames }}>
       {children}
     </ExcelContext.Provider>
   );
