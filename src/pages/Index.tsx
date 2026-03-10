@@ -10,7 +10,7 @@ import ThemeToggle from '@/components/dashboard/ThemeToggle';
 import AnimatedCard from '@/components/dashboard/AnimatedCard';
 import { CardSkeleton, TableSkeleton, FilterSkeleton } from '@/components/dashboard/DashboardSkeleton';
 import { ExcelProvider, useExcelData } from '@/contexts/ExcelContext';
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
