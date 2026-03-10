@@ -28,6 +28,7 @@ const DashboardContent = () => {
         <div className="flex flex-wrap items-center gap-2">
           <NavigationTabs />
           {isAdmin && <ConnectButton />}
+          <CompanyFilter />
         </div>
         <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
           {isAdmin && <ExcelUploader />}
