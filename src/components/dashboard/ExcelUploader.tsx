@@ -77,12 +77,12 @@ const sheetToJson = (worksheet: ExcelJS.Worksheet): Record<string, any>[] => {
 
   worksheet.eachRow((row, rowNumber) => {
     if (rowNumber === 1) {
-      row.eachCell((cell, colNumber) => {
+      row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
         headers[colNumber] = String(cell.value ?? '');
       });
     } else {
       const obj: Record<string, any> = {};
-      row.eachCell((cell, colNumber) => {
+      row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
         const header = headers[colNumber];
         if (header) {
           obj[header] = cell.value;
