@@ -73,26 +73,28 @@ const parseExcelMonth = (value: any): string => {
 // Helper: convert exceljs worksheet to array of objects (like XLSX.utils.sheet_to_json)
 const sheetToJson = (worksheet: ExcelJS.Worksheet): Record<string, any>[] => {
   const rows: Record<string, any>[] = [];
+  const headerRow = worksheet.getRow(1);
+  const colCount = worksheet.columnCount;
   const headers: string[] = [];
 
-  worksheet.eachRow((row, rowNumber) => {
-    if (rowNumber === 1) {
-      row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-        headers[colNumber] = String(cell.value ?? '');
-      });
-    } else {
-      const obj: Record<string, any> = {};
-      row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-        const header = headers[colNumber];
-        if (header) {
-          obj[header] = cell.value;
-        }
-      });
-      if (Object.keys(obj).length > 0) {
-        rows.push(obj);
+  for (let col = 1; col <= colCount; col++) {
+    headers[col] = String(headerRow.getCell(col).value ?? '');
+  }
+
+  const rowCount = worksheet.rowCount;
+  for (let rowNum = 2; rowNum <= rowCount; rowNum++) {
+    const row = worksheet.getRow(rowNum);
+    const obj: Record<string, any> = {};
+    for (let col = 1; col <= colCount; col++) {
+      const header = headers[col];
+      if (header) {
+        obj[header] = row.getCell(col).value;
       }
     }
-  });
+    if (Object.keys(obj).length > 0) {
+      rows.push(obj);
+    }
+  }
 
   return rows;
 };
