@@ -4,14 +4,13 @@ import DataPopup from './DataPopup';
 import { useExcelData } from '@/contexts/ExcelContext';
 
 const REGISTRATION_COLUMNS = [
-  { key: 'CompanyName', label: 'Company' },
   { key: 'State', label: 'State' },
   { key: 'City', label: 'City' },
+  { key: 'Address', label: 'Address' },
+  { key: 'EmployerName', label: 'Employer Name' },
   { key: 'Type', label: 'Type' },
-  { key: 'RCNo', label: 'RC No' },
-  { key: 'Status', label: 'Status' },
-  { key: 'RenewalStatus', label: 'Renewal' },
-  { key: 'AmendmentStatus', label: 'Amendment' },
+  { key: 'RCNo', label: 'RC No.' },
+  { key: 'DateOfObtained', label: 'Date of Obtained' },
   { key: 'Validity', label: 'Validity' },
 ];
 
