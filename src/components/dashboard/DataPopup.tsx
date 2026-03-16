@@ -75,7 +75,7 @@ const DataPopup = ({ open, onOpenChange, title, columns, data }: DataPopupProps)
                   {data.map((row, i) => (
                     <tr key={i}>
                       {columns.map(col => (
-                        <td key={col.key} className="whitespace-nowrap">{row[col.key] ?? '-'}</td>
+                        <td key={col.key} className="whitespace-nowrap">{row[col.key] instanceof Date ? row[col.key].toLocaleDateString() : (row[col.key] ?? '-')}</td>
                       ))}
                     </tr>
                   ))}
