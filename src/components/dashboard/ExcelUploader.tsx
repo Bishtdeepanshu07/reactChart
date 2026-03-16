@@ -153,6 +153,8 @@ const ExcelUploader = () => {
       if (workbook.worksheets.length >= 2) {
         const worksheet2 = workbook.worksheets[1];
         const jsonData2 = sheetToJson(worksheet2);
+        console.log('Sheet2 raw headers:', Object.keys(jsonData2[0] || {}));
+        console.log('Sheet2 first row:', JSON.stringify(jsonData2[0]));
 
         const mappedRegistrationData: RegistrationRow[] = jsonData2.map((row: any) => ({
           CompanyName: row['Company Name'] || '',
