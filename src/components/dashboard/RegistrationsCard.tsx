@@ -3,7 +3,7 @@ import GaugeChart from './GaugeChart';
 import DataPopup from './DataPopup';
 import { useExcelData } from '@/contexts/ExcelContext';
 
-const REGISTRATION_COLUMNS = [
+const REGISTRATION_POPUP_COLUMNS = [
   { key: 'State', label: 'State' },
   { key: 'City', label: 'City' },
   { key: 'Address', label: 'Address' },
@@ -12,7 +12,7 @@ const REGISTRATION_COLUMNS = [
   { key: 'RCNo', label: 'RC No.' },
   { key: 'DateOfObtained', label: 'Date of Obtained' },
   { key: 'Validity', label: 'Validity' },
-];
+] as const;
 
 type PopupType = 'freshRequired' | 'active' | 'pending' | null;
 
