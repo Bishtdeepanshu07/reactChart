@@ -12,7 +12,7 @@ const REGISTRATION_POPUP_COLUMNS = [
   { key: 'RCNo', label: 'RC No.' },
   { key: 'DateOfObtained', label: 'Date of Obtained' },
   { key: 'Validity', label: 'Validity' },
-] as const;
+];
 
 type PopupType = 'freshRequired' | 'active' | 'pending' | null;
 
