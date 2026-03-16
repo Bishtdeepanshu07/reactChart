@@ -60,7 +60,7 @@ const RegistrationsCard = () => {
         open={activePopup !== null}
         onOpenChange={(open) => !open && setActivePopup(null)}
         title={`Registrations - ${popupTitle}`}
-        columns={REGISTRATION_COLUMNS}
+        columns={REGISTRATION_POPUP_COLUMNS}
         data={popupData}
       />
     </div>
