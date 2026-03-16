@@ -70,6 +70,12 @@ const parseExcelMonth = (value: any): string => {
   return String(value);
 };
 
+// Helper: normalize Excel headers so accidental leading/trailing spaces don't break mapping
+const normalizeExcelHeader = (value: unknown): string =>
+  String(value ?? '')
+    .replace(/\u00A0/g, ' ')
+    .trim();
+
 // Helper: convert exceljs worksheet to array of objects (like XLSX.utils.sheet_to_json)
 const sheetToJson = (worksheet: ExcelJS.Worksheet): Record<string, any>[] => {
   const rows: Record<string, any>[] = [];
@@ -78,7 +84,7 @@ const sheetToJson = (worksheet: ExcelJS.Worksheet): Record<string, any>[] => {
   const headers: string[] = [];
 
   for (let col = 1; col <= colCount; col++) {
-    headers[col] = String(headerRow.getCell(col).value ?? '');
+    headers[col] = normalizeExcelHeader(headerRow.getCell(col).value);
   }
 
   const rowCount = worksheet.rowCount;
