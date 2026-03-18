@@ -158,14 +158,14 @@ const ExcelUploader = () => {
 
       setData(mappedData);
 
+      let mappedRegistrationData: RegistrationRow[] = [];
+
       // Parse second sheet (Registration data) if exists
       if (workbook.worksheets.length >= 2) {
         const worksheet2 = workbook.worksheets[1];
         const jsonData2 = sheetToJson(worksheet2);
-        console.log('Sheet2 raw headers:', Object.keys(jsonData2[0] || {}));
-        console.log('Sheet2 first row:', JSON.stringify(jsonData2[0]));
 
-        const mappedRegistrationData: RegistrationRow[] = jsonData2.map((row: any) => ({
+        mappedRegistrationData = jsonData2.map((row: any) => ({
           CompanyName: row['Company Name'] || '',
           State: row['State'] || '',
           City: row['City'] || '',
@@ -188,6 +188,37 @@ const ExcelUploader = () => {
         }));
 
         setRegistrationData(mappedRegistrationData);
+      }
+
+      // Save to Supabase grouped by company name
+      try {
+        const companyMap = new Map<string, { compliance: ComplianceRow[]; registration: RegistrationRow[] }>();
+        
+        mappedData.forEach(row => {
+          const name = row.CompanyName || 'Unknown';
+          if (!companyMap.has(name)) companyMap.set(name, { compliance: [], registration: [] });
+          companyMap.get(name)!.compliance.push(row);
+        });
+        
+        mappedRegistrationData.forEach(row => {
+          const name = row.CompanyName || 'Unknown';
+          if (!companyMap.has(name)) companyMap.set(name, { compliance: [], registration: [] });
+          companyMap.get(name)!.registration.push(row);
+        });
+
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        for (const [companyName, companyRows] of companyMap) {
+          await (supabase as any).from('company_data').upsert({
+            company_name: companyName,
+            compliance_data: companyRows.compliance,
+            registration_data: companyRows.registration,
+            updated_by: user?.id,
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'company_name' });
+        }
+      } catch (saveErr) {
+        console.error('Failed to save to Supabase:', saveErr);
       }
 
       setFileName(file.name);
