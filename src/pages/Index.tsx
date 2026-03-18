@@ -10,8 +10,9 @@ import ThemeToggle from '@/components/dashboard/ThemeToggle';
 import AnimatedCard from '@/components/dashboard/AnimatedCard';
 import { CardSkeleton, TableSkeleton, FilterSkeleton } from '@/components/dashboard/DashboardSkeleton';
 import { ExcelProvider, useExcelData } from '@/contexts/ExcelContext';
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { useUserCompanyData } from '@/hooks/useUserCompanyData';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
 import { Building2, X } from 'lucide-react';
@@ -82,12 +83,23 @@ const CompanyFilter = () => {
 };
 
 const DashboardContent = () => {
-  const { data, registrationData, isLoading } = useExcelData();
+  const { data, registrationData, isLoading, setData, setRegistrationData } = useExcelData();
   const { isAdmin } = useIsAdmin();
+  const { complianceData: userData, registrationData: userRegData, loading: userLoading, assignedCompany } = useUserCompanyData();
+
+  // For non-admin users, auto-load their assigned company data
+  useEffect(() => {
+    if (!isAdmin && !userLoading && userData.length > 0) {
+      setData(userData);
+      setRegistrationData(userRegData);
+    }
+  }, [isAdmin, userLoading, userData, userRegData, setData, setRegistrationData]);
+
   const hasData = data.length > 0 || registrationData.length > 0;
   const loadCount = useRef(0);
   if (hasData) loadCount.current += 1;
   const triggerKey = `${hasData}-${data.length}-${registrationData.length}`;
+  const showLoading = isLoading || (!isAdmin && userLoading);
 
   return (
     <div className="min-h-screen bg-background p-2 sm:p-4 md:p-6">
@@ -97,6 +109,12 @@ const DashboardContent = () => {
           <NavigationTabs />
           {isAdmin && <ConnectButton />}
           {isAdmin && <CompanyFilter />}
+          {!isAdmin && assignedCompany && (
+            <span className="px-3 py-1.5 rounded-md text-sm font-medium bg-primary/10 text-primary flex items-center gap-1.5">
+              <Building2 className="h-3.5 w-3.5" />
+              {assignedCompany}
+            </span>
+          )}
         </div>
         <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
           {isAdmin && <ExcelUploader />}
@@ -107,7 +125,7 @@ const DashboardContent = () => {
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6">
-        {isLoading ? (
+        {showLoading ? (
           <>
             <CardSkeleton />
             <CardSkeleton />
@@ -126,7 +144,7 @@ const DashboardContent = () => {
 
       {/* Bottom Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
-        {isLoading ? (
+        {showLoading ? (
           <>
             <TableSkeleton />
             <FilterSkeleton />
