@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      company_data: {
+        Row: {
+          company_name: string
+          compliance_data: Json
+          id: string
+          registration_data: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          company_name: string
+          compliance_data?: Json
+          id?: string
+          registration_data?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          company_name?: string
+          compliance_data?: Json
+          id?: string
+          registration_data?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -29,6 +56,30 @@ export type Database = {
           created_at?: string
           id?: string
           username?: string
+        }
+        Relationships: []
+      }
+      user_companies: {
+        Row: {
+          assigned_by: string | null
+          company_name: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          assigned_by?: string | null
+          company_name: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          assigned_by?: string | null
+          company_name?: string
+          created_at?: string
+          id?: string
+          user_id?: string
         }
         Relationships: []
       }
