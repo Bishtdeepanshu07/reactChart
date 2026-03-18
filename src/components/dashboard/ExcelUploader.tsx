@@ -92,13 +92,16 @@ const sheetToJson = (worksheet: ExcelJS.Worksheet): Record<string, any>[] => {
   for (let rowNum = 2; rowNum <= rowCount; rowNum++) {
     const row = worksheet.getRow(rowNum);
     const obj: Record<string, any> = {};
+    let hasValue = false;
     for (let col = 1; col <= colCount; col++) {
       const header = headers[col];
       if (header) {
-        obj[header] = row.getCell(col).value;
+        const val = row.getCell(col).value;
+        obj[header] = val;
+        if (val !== null && val !== undefined && val !== '') hasValue = true;
       }
     }
-    if (Object.keys(obj).length > 0) {
+    if (hasValue) {
       rows.push(obj);
     }
   }
