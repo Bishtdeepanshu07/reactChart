@@ -6,6 +6,7 @@ import { ComplianceRow, RegistrationRow } from '@/types/compliance';
 import ExcelJS from 'exceljs';
 import { toast } from 'sonner';
 import { format, parse, isValid } from 'date-fns';
+import { supabase } from '@/integrations/supabase/client';
 
 // Parse Excel dates - handles serial numbers and various string formats
 const parseExcelDate = (value: any): string => {
