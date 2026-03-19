@@ -101,7 +101,7 @@ const LandingPage = () => {
 
         {/* Copyright */}
         <div className="text-center py-3 text-sm text-white border-white bg-[#454545]">
-          Copyrights @2025 Advent. All Rights Reserved
+          Copyrights @2026 Advent. All Rights Reserved
         </div>
       </footer>
       </div>
