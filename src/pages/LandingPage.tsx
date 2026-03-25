@@ -35,7 +35,7 @@ const LandingPage = () => {
         </header>
 
       {/* Hero Section */}
-      <main className="relative flex-1 flex flex-col items-center justify-center py-16 sm:py-20 md:py-[240px] px-4">
+      <main className="relative flex-1 flex flex-col items-center justify-center min-h-[calc(100vh-56px)] sm:min-h-[calc(100vh-64px)] md:min-h-0 md:py-[240px] px-4">
         {/* Decorative Circles */}
         <div className="absolute top-[-20px] sm:top-[-40px] left-[10%] sm:left-[15%] w-16 h-16 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-full bg-[#5b6abf] opacity-80" />
         <div className="absolute top-[10%] right-[3%] sm:right-[5%] w-10 h-10 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full bg-[#5b6abf] opacity-60" />
