@@ -55,11 +55,11 @@ const LandingPage = () => {
 
       {/* Footer */}
       <footer className="bg-[#4a4a4a] text-white">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 px-4 sm:px-8 md:px-16 py-8 sm:py-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-8 px-4 sm:px-6 md:px-16 py-4 sm:py-6 md:py-10">
           {/* About Us */}
           <div className="sm:col-span-2 md:col-span-1">
-            <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 underline underline-offset-4">About Us</h3>
-            <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
+            <h3 className="text-xs sm:text-sm md:text-lg font-bold mb-1.5 sm:mb-2 md:mb-4 underline underline-offset-4">About Us</h3>
+            <p className="text-[10px] sm:text-xs md:text-sm text-gray-300 leading-relaxed">
               Advent is an HR solutions providing company that enjoys a long list of satisfied clients across the country. We home a competent team of professionals, which include retired senior government officials, chartered accountants, company secretaries, senior advocates, and industry experts.
             </p>
             <div className="flex items-center gap-3 mt-4 sm:mt-5">
