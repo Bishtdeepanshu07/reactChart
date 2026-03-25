@@ -43,12 +43,12 @@ const LandingPage = () => {
         <div className="absolute bottom-[5%] left-[5%] sm:left-[10%] w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-[#5b6abf] opacity-50" />
         <div className="hidden sm:block absolute top-[40%] left-[-20px] w-12 h-12 rounded-full bg-[#5b6abf] opacity-40" />
 
-        <h1 className="relative z-10 text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-[#333] text-center leading-tight italic font-serif">
+        <h1 className="relative z-10 text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-light text-[#333] text-center leading-tight italic font-serif">
           Smarter Dashboards<br />Faster Decisions
         </h1>
         <Link
           to="/dashboard"
-          className="relative z-10 mt-6 sm:mt-8 px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-[#5b6abf] text-white text-sm sm:text-base font-medium hover:bg-[#4a59ae] transition-colors">
+          className="relative z-10 mt-8 sm:mt-10 px-10 sm:px-12 py-3.5 sm:py-4 rounded-full bg-[#5b6abf] text-white text-base sm:text-lg font-medium hover:bg-[#4a59ae] transition-colors">
           Get Started
         </Link>
       </main>
