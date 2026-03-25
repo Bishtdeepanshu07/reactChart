@@ -74,8 +74,8 @@ const LandingPage = () => {
 
           {/* Support */}
           <div>
-            <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 underline underline-offset-4">Support</h3>
-            <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-300">
+            <h3 className="text-xs sm:text-sm md:text-lg font-bold mb-1.5 sm:mb-2 md:mb-4 underline underline-offset-4">Support</h3>
+            <ul className="space-y-1 sm:space-y-2 md:space-y-3 text-[10px] sm:text-xs md:text-sm text-gray-300">
               <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Help</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
