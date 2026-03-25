@@ -84,8 +84,8 @@ const LandingPage = () => {
 
           {/* Contact Us */}
           <div>
-            <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 underline underline-offset-4">Contact Us</h3>
-            <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-300">
+            <h3 className="text-xs sm:text-sm md:text-lg font-bold mb-1.5 sm:mb-2 md:mb-4 underline underline-offset-4">Contact Us</h3>
+            <div className="space-y-1 sm:space-y-2 md:space-y-3 text-[10px] sm:text-xs md:text-sm text-gray-300">
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 shrink-0" />
                 <span>+91 8838658389</span>
