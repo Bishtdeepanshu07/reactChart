@@ -1,0 +1,1 @@
+ALTER TABLE public.company_data ADD COLUMN IF NOT EXISTS file_name text;

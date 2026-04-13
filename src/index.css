@@ -1,0 +1,220 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 230 40% 12%;
+    --foreground: 210 40% 98%;
+
+    --card: 230 35% 18%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 230 35% 18%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 174 72% 56%;
+    --primary-foreground: 230 40% 12%;
+
+    --secondary: 230 30% 25%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 230 25% 22%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 45 93% 58%;
+    --accent-foreground: 230 40% 12%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 230 25% 28%;
+    --input: 230 25% 28%;
+    --ring: 174 72% 56%;
+
+    --radius: 0.5rem;
+
+    /* Custom dashboard colors */
+    --dashboard-cyan: 174 72% 56%;
+    --dashboard-yellow: 45 93% 58%;
+    --dashboard-gray: 230 20% 45%;
+    --dashboard-purple: 260 60% 55%;
+    --dashboard-dark: 230 40% 12%;
+    --dashboard-card: 230 35% 18%;
+    --dashboard-card-light: 230 30% 22%;
+    --dashboard-border: 230 25% 30%;
+
+    --sidebar-background: 230 40% 10%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 174 72% 56%;
+    --sidebar-primary-foreground: 230 40% 12%;
+    --sidebar-accent: 230 30% 25%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 230 25% 28%;
+    --sidebar-ring: 174 72% 56%;
+  }
+
+  .light {
+    --background: 220 20% 97%;
+    --foreground: 224 30% 18%;
+
+    --card: 0 0% 93%;
+    --card-foreground: 224 30% 18%;
+
+    --popover: 0 0% 93%;
+    --popover-foreground: 224 30% 18%;
+
+    --primary: 200 80% 40%;
+    --primary-foreground: 0 0% 93%;
+
+    --secondary: 220 14% 90%;
+    --secondary-foreground: 224 30% 18%;
+
+    --muted: 220 14% 93%;
+    --muted-foreground: 220 10% 46%;
+
+    --accent: 32 90% 50%;
+    --accent-foreground: 0 0% 93%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 93%;
+
+    --border: 220 13% 84%;
+    --input: 220 13% 84%;
+    --ring: 200 80% 40%;
+
+    --dashboard-cyan: 174 72% 56%;
+    --dashboard-yellow: 45 93% 58%;
+    --dashboard-gray: 230 20% 45%;
+    --dashboard-purple: 260 50% 50%;
+    --dashboard-dark: 220 20% 97%;
+    --dashboard-card: 0 0% 93%;
+    --dashboard-card-light: 220 14% 95%;
+    --dashboard-border: 220 13% 84%;
+
+    --sidebar-background: 220 16% 93%;
+    --sidebar-foreground: 224 30% 18%;
+    --sidebar-primary: 200 80% 40%;
+    --sidebar-primary-foreground: 0 0% 93%;
+    --sidebar-accent: 220 14% 88%;
+    --sidebar-accent-foreground: 224 30% 18%;
+    --sidebar-border: 220 13% 84%;
+    --sidebar-ring: 200 80% 40%;
+  }
+
+  .dark {
+    --background: 230 40% 12%;
+    --foreground: 210 40% 98%;
+    --card: 230 35% 18%;
+    --card-foreground: 210 40% 98%;
+    --popover: 230 35% 18%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 174 72% 56%;
+    --primary-foreground: 230 40% 12%;
+    --secondary: 230 30% 25%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 230 25% 22%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 45 93% 58%;
+    --accent-foreground: 230 40% 12%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 230 25% 28%;
+    --input: 230 25% 28%;
+    --ring: 174 72% 56%;
+    --sidebar-background: 230 40% 10%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 174 72% 56%;
+    --sidebar-primary-foreground: 230 40% 12%;
+    --sidebar-accent: 230 30% 25%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 230 25% 28%;
+    --sidebar-ring: 174 72% 56%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .dashboard-card {
+    @apply bg-card rounded-lg border border-border p-2 sm:p-4;
+  }
+
+  .dashboard-card-header {
+    @apply bg-gradient-to-r from-primary/20 to-primary/10 rounded-t-lg px-2 sm:px-4 py-2 text-center font-semibold text-foreground text-sm sm:text-base;
+  }
+
+  .gauge-value {
+    @apply font-bold;
+  }
+
+  .gauge-label {
+    @apply text-muted-foreground text-center;
+  }
+
+  .nav-tab {
+    @apply px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors rounded-md whitespace-nowrap;
+  }
+
+  .nav-tab-active {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .nav-tab-inactive {
+    @apply text-muted-foreground hover:text-foreground hover:bg-secondary;
+  }
+
+  .month-pill {
+    @apply px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium rounded transition-colors whitespace-nowrap;
+  }
+
+  .month-pill-active {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .month-pill-inactive {
+    @apply text-muted-foreground hover:text-foreground;
+  }
+
+  .data-table {
+    @apply w-full text-xs sm:text-sm;
+  }
+
+  .data-table th {
+    @apply px-2 sm:px-3 py-1.5 sm:py-2 text-left font-medium text-muted-foreground bg-secondary/50 whitespace-nowrap;
+  }
+
+  .data-table td {
+    @apply px-2 sm:px-3 py-1.5 sm:py-2 border-b border-border;
+  }
+
+  .data-table tr:hover {
+    @apply bg-secondary/30;
+  }
+
+  .filter-select {
+    @apply bg-secondary border border-border rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-foreground;
+  }
+}
+
+@keyframes fadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
