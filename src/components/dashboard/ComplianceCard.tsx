@@ -11,9 +11,9 @@ const COMPLIANCE_COLUMNS = [
   { key: 'State', label: 'State' },
   { key: 'TaskCycle', label: 'Task Cycle' },
   { key: 'DueDate', label: 'Due Date' },
-  { key: 'ComplianceScore', label: 'Compliance Score' },
   { key: 'ComplianceStatus', label: 'Status' },
   { key: 'CompanyName', label: 'Company' },
+  { key: 'ComplianceScore', label: 'Compliance Score' },
 ];
 
 const PENDING_COMPLIANCE_COLUMNS = [
@@ -24,10 +24,10 @@ const PENDING_COMPLIANCE_COLUMNS = [
   { key: 'State', label: 'State' },
   { key: 'TaskCycle', label: 'Task Cycle' },
   { key: 'DueDate', label: 'Due Date' },
-  { key: 'ComplianceScore', label: 'Compliance Score' },
   { key: 'ComplianceStatus', label: 'Status' },
   { key: 'Comment', label: 'Reason' },
   { key: 'CompanyName', label: 'Company' },
+  { key: 'ComplianceScore', label: 'Compliance Score' },
 ];
 
 type PopupType = 'notDue' | 'pending' | 'completed' | null;
