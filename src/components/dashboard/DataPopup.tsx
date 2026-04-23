@@ -67,7 +67,12 @@ const DataPopup = ({ open, onOpenChange, title, columns, data }: DataPopupProps)
                 <thead className="sticky top-0 z-10 bg-card">
                   <tr>
                     {columns.map(col => (
-                      <th key={col.key} className="whitespace-nowrap">{col.label}</th>
+                      <th
+                        key={col.key}
+                        className={col.key === 'ComplianceScore' ? 'whitespace-nowrap text-center' : 'whitespace-nowrap'}
+                      >
+                        {col.label}
+                      </th>
                     ))}
                   </tr>
                 </thead>
@@ -75,7 +80,12 @@ const DataPopup = ({ open, onOpenChange, title, columns, data }: DataPopupProps)
                   {data.map((row, i) => (
                     <tr key={i}>
                       {columns.map(col => (
-                        <td key={col.key} className="whitespace-nowrap">{row[col.key] instanceof Date ? row[col.key].toLocaleDateString() : (row[col.key] ?? '-')}</td>
+                        <td
+                          key={col.key}
+                          className={col.key === 'ComplianceScore' ? 'whitespace-nowrap text-center' : 'whitespace-nowrap'}
+                        >
+                          {row[col.key] instanceof Date ? row[col.key].toLocaleDateString() : (row[col.key] ?? '-')}
+                        </td>
                       ))}
                     </tr>
                   ))}
