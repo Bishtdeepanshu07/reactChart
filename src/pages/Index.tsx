@@ -12,6 +12,7 @@ import { CardSkeleton, TableSkeleton, FilterSkeleton } from '@/components/dashbo
 import { ExcelProvider, useExcelData } from '@/contexts/ExcelContext';
 import { useRef, useState, useMemo, useEffect } from 'react';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { useIdleLogout } from '@/hooks/useIdleLogout';
 import { useUserCompanyData } from '@/hooks/useUserCompanyData';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
@@ -85,8 +86,11 @@ const CompanyFilter = () => {
 
 const DashboardContent = () => {
   const { data, registrationData, isLoading, setData, setRegistrationData } = useExcelData();
-  const { isAdmin } = useIsAdmin();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { complianceData: userData, registrationData: userRegData, loading: userLoading, assignedCompany } = useUserCompanyData();
+
+  // Auto-logout standard (non-admin) users after 7 minutes of inactivity.
+  useIdleLogout(!adminLoading && !isAdmin);
 
   // For non-admin users, auto-load their assigned company data
   useEffect(() => {
