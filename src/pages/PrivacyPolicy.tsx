@@ -79,15 +79,7 @@ const PrivacyPolicy = () => {
             </ul>
           </Section>
 
-          <Section title="5. Cookies and Tracking">
-            <p className="mb-4">Our website may use cookies or similar technologies to:</p>
-            <ul className="list-disc pl-6 mb-5 space-y-1">
-              <li>Enhance user experience</li>
-              <li>Analyze website traffic</li>
-            </ul>
-            <p>You can disable cookies through your browser settings.</p>
-          </Section>
-
+        
           <Section title="6. User Rights">
             <p className="mb-4">You have the right to:</p>
             <ul className="list-disc pl-6 space-y-1">
