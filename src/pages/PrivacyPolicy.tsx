@@ -80,7 +80,7 @@ const PrivacyPolicy = () => {
           </Section>
 
         
-          <Section title="6. User Rights">
+          <Section title="5. User Rights">
             <p className="mb-4">You have the right to:</p>
             <ul className="list-disc pl-6 space-y-1">
               <li>Access your personal data</li>
@@ -89,19 +89,19 @@ const PrivacyPolicy = () => {
             </ul>
           </Section>
 
-          <Section title="7. Third-Party Services">
+          <Section title="6. Third-Party Services">
             <p>
               We may use third-party tools (like analytics or backend services). These services may collect data according to their own privacy policies.
             </p>
           </Section>
 
-          <Section title="8. Changes to This Policy">
+          <Section title="7. Changes to This Policy">
             <p>
               We may update this Privacy Policy from time to time. Updates will be posted on this page with a revised date.
             </p>
           </Section>
 
-          <Section title="9. Contact Us">
+          <Section title="8. Contact Us">
             <p className="mb-4">If you have any questions about this Privacy Policy, you can contact us at:</p>
             <p>
               Email:{' '}
